@@ -1,7 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class Player extends JLabel implements IGameObject {
+public class Player extends JPanel implements IGameObject {
+    AnimationRenderer animationRenderer;
+
     private final MultiKeyListener KeyListener = new MultiKeyListener() {
         @Override
         public void MultiKeyTyped(KeyEvent[] keyEvents) {
@@ -20,9 +23,22 @@ public class Player extends JLabel implements IGameObject {
     };
 
     public Player() {
-        super("I am a player!");
+//        super("I am a player!");
 
         addKeyListener(KeyListener);
+
+        AnimationSprite idle = new AnimationSprite(
+            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Untitled design.jpg",
+            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Untitled design (1).jpg",
+            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Untitled design (2).jpg"
+        );
+
+        AnimationSprites sprites = new AnimationSprites();
+        sprites.addAnimation("idle", idle);
+
+        animationRenderer = new AnimationRenderer(this, sprites);
+
+//        System.out.println(animationRenderer.)
     }
 
     public void update(float delta) {
@@ -47,5 +63,15 @@ public class Player extends JLabel implements IGameObject {
         }
 
         setLocation(x, y);
+
+        animationRenderer.update(delta);
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        animationRenderer.render(graphics);
     }
 }

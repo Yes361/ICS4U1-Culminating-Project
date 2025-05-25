@@ -1,48 +1,39 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class AnimationSprites implements IGameObject {
-//    private ArrayList<Image>
-    private float timeElapsed;
-    private float prevFrameElapsed;
-    private float AnimationInterval = 500;
-    private int currentFrame;
-    private final List<Image> Sprites = new ArrayList<>();
+    final private HashMap<String, AnimationSprite> animations = new HashMap<>();
+    private String currentAnimation;
 
-    public AnimationSprites(Component component, String... files) {
-        MediaTracker track = new MediaTracker(component);
+    public AnimationSprites() {}
 
-        for (int i = 0; i < files.length; i++) {
-            Image image = Toolkit.getDefaultToolkit().getImage(files[i]);
-            Sprites.add(image);
-            track.addImage(image, i);
+    public void addAnimation(String identifier, AnimationSprite animation) {
+        if (animations.isEmpty()) {
+            currentAnimation = identifier;
         }
 
-        try {
-            track.waitForAll();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        reset();
-    }
-
-    public void reset() {
-        prevFrameElapsed = 0.0f;
-        timeElapsed = 0.0f;
-        currentFrame = 0;
+        animations.put(identifier, animation);
     }
 
     public void update(float delta) {
-        timeElapsed += delta;
-        if (timeElapsed - prevFrameElapsed > AnimationInterval) {
-            prevFrameElapsed = timeElapsed;
-            currentFrame = (currentFrame + 1) % Sprites.size();
+        if (!animations.isEmpty()) {
+            getCurrentAnimationSprite().update(delta);
         }
     }
 
-    public void pause() {
+    public String getCurrentAnimation() {
+        return currentAnimation;
+    }
 
+    public Image getCurrentSprite() {
+        return animations.get(currentAnimation).getCurrentSprite();
+    }
+
+    public void setCurrentAnimation(String currentAnimation) {
+        this.currentAnimation = currentAnimation;
+    }
+
+    public AnimationSprite getCurrentAnimationSprite() {
+        return animations.get(currentAnimation);
     }
 }
