@@ -23,4 +23,10 @@ public class AnimationRenderer extends JComponent implements IGameObject {
         graphics.drawImage(currentFrame, 0, 0, componentReference);
         return graphics;
     }
+
+    public Graphics render(Graphics graphics, int width, int height) {
+        Image currentFrame = animationSprites.getCurrentSprite();
+        graphics.drawImage(currentFrame, 0, 0, width, height, componentReference);
+        return graphics;
+    }
 }

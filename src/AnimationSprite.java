@@ -10,6 +10,7 @@ public class AnimationSprite implements IGameObject {
     private float AnimationInterval = 500;
     private int currentFrame;
     private final List<Image> Sprites = new ArrayList<>();
+    private final EventEmitter eventEmitter = new EventEmitter();
 
     public AnimationSprite(String... files) {
         reset();
@@ -24,6 +25,10 @@ public class AnimationSprite implements IGameObject {
         return Sprites.get(currentFrame);
     }
 
+    public int getCurrentFrameIndex() {
+        return currentFrame;
+    }
+
     public void reset() {
         prevFrameElapsed = 0.0f;
         timeElapsed = 0.0f;
@@ -36,10 +41,25 @@ public class AnimationSprite implements IGameObject {
         if (timeElapsed - prevFrameElapsed > AnimationInterval) {
             prevFrameElapsed = timeElapsed;
             currentFrame = (currentFrame + 1) % Sprites.size();
+
+            eventEmitter.emit("onAnimation", currentFrame);
         }
     }
 
-    public void pause() {
+    public void update(float delta, AnimationEvent event) {
+        timeElapsed += delta;
+//        System.out.printf("%f, %f, %d\n", timeElapsed, prevFrameElapsed, currentFrame);
+        if (timeElapsed - prevFrameElapsed > AnimationInterval) {
+            prevFrameElapsed = timeElapsed;
+            currentFrame = (currentFrame + 1) % Sprites.size();
 
+            eventEmitter.emit("onAnimation", currentFrame);
+
+            event.onEvent(currentFrame);
+        }
+    }
+
+    public void onAnimationEvent(AnimationEvent event) {
+        eventEmitter.subscribe("onAnimation", event);
     }
 }

@@ -19,6 +19,10 @@ public class EventEmitter {
     }
 
     public void emit(String eventName, Object ...args) {
+        if (!events.containsKey(eventName)) {
+            return;
+        }
+
         for (EventListener function : events.get(eventName)) {
             function.onEvent(args);
         }

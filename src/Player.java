@@ -72,6 +72,6 @@ public class Player extends JPanel implements IGameObject {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        animationRenderer.render(graphics);
+        animationRenderer.render(graphics, 50, 50);
     }
 }
