@@ -1,7 +1,8 @@
+package Core.Input;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
-import java.util.HashSet;
 
 abstract public class MultiKeyListener implements KeyListener {
     protected final HashMap<Integer, KeyEvent> keys = new HashMap<>();

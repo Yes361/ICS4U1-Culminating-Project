@@ -1,8 +1,11 @@
-import java.util.ArrayList;
+package Core.GameSystem;
 
-abstract public class GameObject implements IGameObject {
+import java.util.*;
+
+abstract public class GameObject {
     protected GameObject parent;
-    protected ArrayList<GameObject> children = new ArrayList<>();
+    protected List<GameObject> children = new ArrayList<>();
+    protected List<GameComponent> components = new ArrayList<>();
     protected String Identifier;
 
     public GameObject() {}
@@ -12,17 +15,54 @@ abstract public class GameObject implements IGameObject {
     public void ExitTree() {};
     public void EnterTree() {};
 
+    public void addComponent(GameComponent component) {
+        component.setRef(this);
+        components.add(component);
+    }
+
+    public GameComponent getComponent(int index) {
+        return components.get(index);
+    }
+
+    public <T extends GameComponent> T getComponent(Class<T> classType) {
+        for (GameComponent component : components) {
+            if (classType.isInstance(component)) {
+                return classType.cast(component);
+            }
+        }
+        return null;
+    }
+
+    public void removeComponent(GameComponent component) {
+        component.setRef(null);
+        components.remove(component);
+    }
+
+    public void removeComponent(int index) {
+        components.remove(index);
+    }
+
     protected void UpdateHandler(float delta) {
         update(delta);
 
         for (GameObject child : children) {
             child.UpdateHandler(delta);
         }
+
+        for (GameComponent component : components) {
+            component.update(delta);
+        }
     }
 
-    protected void ReadyHandler() {}
+    public void ReadyHandler() {
+        for (GameObject child : children) {
+            child.ReadyHandler();
+        }
 
-    public IGameObject getParentNode() {
+        ready();
+    }
+
+    public GameObject getParentNode() {
         return parent;
     }
 
@@ -48,6 +88,10 @@ abstract public class GameObject implements IGameObject {
             }
         }
         return null;
+    }
+
+    public int getChildCount() {
+        return children.size();
     }
 
     public GameObject[] getGameObjects() {

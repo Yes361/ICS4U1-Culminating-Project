@@ -1,3 +1,5 @@
+package Core.Input;
+
 import java.awt.event.KeyEvent;
 
 public interface IMultiKeyListener {

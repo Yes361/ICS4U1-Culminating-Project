@@ -1,6 +1,8 @@
+import Components.Player;
+import Components.TypewriterLabel;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class Game extends JFrame {
     public Game() {
@@ -9,7 +11,7 @@ public class Game extends JFrame {
         Player player = new Player();
         player.setFocusable(true);
 
-        this.add(player);
+        add(player);
     }
 
     public void update(Container parent, float delta) {
@@ -19,8 +21,12 @@ public class Game extends JFrame {
             }
 
             // Temporary
-            if (child instanceof IGameObject) {
+            if (child instanceof Player) {
                 ((Player) child).update(delta);
+            }
+
+            if (child instanceof TypewriterLabel) {
+                ((TypewriterLabel) child).update(delta);
             }
         }
     }

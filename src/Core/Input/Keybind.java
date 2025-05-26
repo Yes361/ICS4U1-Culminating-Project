@@ -1,3 +1,5 @@
+package Core.Input;
+
 import javax.swing.*;
 import java.util.*;
 
