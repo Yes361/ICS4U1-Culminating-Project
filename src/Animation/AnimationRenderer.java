@@ -1,12 +1,11 @@
 package Animation;
 
 import Utility.EventEmitter;
-import Core.GameSystem.GameComponent;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class AnimationRenderer extends GameComponent {
+public class AnimationRenderer {
     private final AnimationSprites animationSprites;
     private String currentAnimationName;
     private AnimationSprite currentAnimation;
