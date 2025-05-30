@@ -1,18 +1,39 @@
 package Components;
 
 import Animation.*;
+import Core.GameSystem.AssetManager;
+import Core.GameSystem.AudioManager;
+import Core.GameSystem.JGameObject;
 import Core.Input.Input;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class Player extends JComponent {
+public class Player extends JGameObject {
 
-    private final Input input = new Input();
+    private final Input input = new Input() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            super.keyPressed(e);
+
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_DOWN, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT:
+//                    AudioManager.play(AssetManager.getAudioResourcePath("Dress Shoe Walking Down Stairs Sound Effect.wav"));
+                break;
+                default:
+                break;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            super.keyReleased(e);
+
+//            AudioManager.stop();
+        }
+    };
 
     AnimationRenderer animationRenderer;
-    TypewriterLabel label;
 
     float x;
     float y;
@@ -20,20 +41,59 @@ public class Player extends JComponent {
     public Player() {
         addKeyListener(input);
         setSize(100, 100);
+        setLocation(0, 0);
 
-        AnimationSprite walkAnimation = new AnimationSprite(
+        x = getX();
+        y = getY();
+
+        AnimationSprite UpAnimation = new AnimationSprite(
             100,
-            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Seraphina-1.png.png",
-            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Seraphina-2.png.png",
-            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Seraphina-3.png.png",
-            "C:\\Users\\NAZRU\\IdeaProjects\\ICS4U1-Culminating-Project\\src\\Resources\\Sprites\\Seraphina-4.png.png"
+            AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png"),
+            AssetManager.getSpriteResourcePath("Jasper\\Jasper-2.png.png"),
+            AssetManager.getSpriteResourcePath("Jasper\\Jasper-3.png.png"),
+            AssetManager.getSpriteResourcePath("Jasper\\Jasper-4.png.png")
+        );
+
+        AnimationSprite LeftAnimation = new AnimationSprite(
+                50,
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide-1.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide-2.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide-3.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide-4.png.png")
+        );
+
+        AnimationSprite RightAnimation = new AnimationSprite(
+                50,
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-1.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-2.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-3.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-4.png.png")
+        );
+
+        AnimationSprite DownAnimation = new AnimationSprite(
+                100,
+                AssetManager.getSpriteResourcePath("Jasper\\JasperBack-1.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperBack-2.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperBack-3.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\JasperBack-4.png.png")
+        );
+
+        AnimationSprite IdleAnimation = new AnimationSprite(
+                100,
+                AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png")
         );
 
         AnimationSprites sprites = new AnimationSprites();
-        sprites.addAnimation("walk", walkAnimation);
+        sprites.addAnimation("down", DownAnimation);
+        sprites.addAnimation("left", LeftAnimation);
+        sprites.addAnimation("right", RightAnimation);
+        sprites.addAnimation("up", UpAnimation);
+        sprites.addAnimation("idle", IdleAnimation);
 
         animationRenderer = new AnimationRenderer(this, sprites);
-        animationRenderer.setCurrentAnimation("walk");
+        animationRenderer.setCurrentAnimation("idle");
+
+        repaint();
     }
 
 
@@ -42,18 +102,18 @@ public class Player extends JComponent {
 
         if (input.isKeyPressed(KeyEvent.VK_UP)) {
             y -= speed * delta;
-        }
-
-        if (input.isKeyPressed(KeyEvent.VK_DOWN)) {
+            animationRenderer.setCurrentAnimation("down");
+        } else if (input.isKeyPressed(KeyEvent.VK_DOWN)) {
             y += speed * delta;
-        }
-
-        if (input.isKeyPressed(KeyEvent.VK_LEFT)) {
+            animationRenderer.setCurrentAnimation("up");
+        } else if (input.isKeyPressed(KeyEvent.VK_LEFT)) {
             x -= speed * delta;
-        }
-
-        if (input.isKeyPressed(KeyEvent.VK_RIGHT)) {
+            animationRenderer.setCurrentAnimation("left");
+        } else if (input.isKeyPressed(KeyEvent.VK_RIGHT)) {
             x += speed * delta;
+            animationRenderer.setCurrentAnimation("right");
+        } else {
+            animationRenderer.setCurrentAnimation("idle");
         }
 
         setLocation((int) x, (int) y);

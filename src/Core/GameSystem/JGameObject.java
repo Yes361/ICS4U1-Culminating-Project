@@ -4,29 +4,22 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class JGameObject extends JComponent {
+public class JGameObject extends JComponent {
     protected JGameObject parent;
     protected List<JGameObject> children = new ArrayList<>();
 
     public JGameObject() {}
 
-    abstract public void ready();
-    abstract public void update(float delta);
+    public void update(float delta) {
 
-    protected void UpdateHandler(float delta) {
+    };
+
+    public void UpdateHandler(float delta) {
         update(delta);
 
         for (JGameObject child : children) {
             child.UpdateHandler(delta);
         }
-    }
-
-    public void ReadyHandler() {
-        for (JGameObject child : children) {
-            child.ReadyHandler();
-        }
-
-        ready();
     }
 
     public JGameObject getParentNode() {
@@ -41,13 +34,15 @@ abstract public class JGameObject extends JComponent {
         children.add(gameObject);
 
         gameObject.setParentNode(this);
+
+        super.add(gameObject);
     }
 
     public JGameObject getChild(int index) {
         return children.get(index);
     }
 
-    public <T extends GameObject> T getChild(Class<T> classType) {
+    public <T> T getChild(Class<T> classType) {
         for (JGameObject child : children) {
             if (classType.isInstance(child)) {
                 return classType.cast(child);
@@ -68,6 +63,8 @@ abstract public class JGameObject extends JComponent {
         children.remove(gameObject);
 
         gameObject.setParentNode(null);
+
+        super.remove(gameObject);
     }
 
 //    public GameObject findNode() {

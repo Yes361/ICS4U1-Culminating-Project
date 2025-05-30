@@ -1,0 +1,60 @@
+package Core.GameSystem;
+
+import java.util.HashMap;
+
+public class AssetManager {
+    private static String resourceDirectory = "\\src\\Resources";
+    private static String spriteResourceDirectory = "\\src\\Resources\\Sprites";
+    private static String audioResourceDirectory = "\\src\\Resources\\Audio";
+    private static HashMap<String, String> customDirectories = new HashMap<>();
+
+    public static String getSpriteResourcePath(String filePath) {
+        return System.getProperty("user.dir") + spriteResourceDirectory + "\\" + filePath;
+    }
+
+    public static String getAudioResourcePath(String filePath) {
+        return System.getProperty("user.dir") + audioResourceDirectory + "\\" + filePath;
+    }
+
+//    TODO: method to return AudioStream
+
+    public static String getResourceDirectory(String filePath) {
+        return System.getProperty("user.dir") + resourceDirectory + "\\" + filePath;
+    }
+
+    public static String getRelativeDirectory(String filePath) {
+        return System.getProperty("user.dir") + filePath;
+    }
+
+    public static void setSpriteResourceDirectory(String spriteResourceDirectory) {
+        AssetManager.spriteResourceDirectory = spriteResourceDirectory;
+    }
+
+    public static String getSpriteResourceDirectory() {
+        return spriteResourceDirectory;
+    }
+
+    public static String getResourceDirectory() {
+        return resourceDirectory;
+    }
+
+    public static void setResourceDirectory(String resourceDirectory) {
+        AssetManager.resourceDirectory = resourceDirectory;
+    }
+
+    public static HashMap<String, String> getCustomDirectories() {
+        return customDirectories;
+    }
+
+    public static void setCustomDirectories(HashMap<String, String> customDirectories) {
+        AssetManager.customDirectories = customDirectories;
+    }
+
+    public static String getAudioResourceDirectory() {
+        return audioResourceDirectory;
+    }
+
+    public static void setAudioResourceDirectory(String audioResourceDirectory) {
+        AssetManager.audioResourceDirectory = audioResourceDirectory;
+    }
+}

@@ -1,5 +1,6 @@
 package Core.Input;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -8,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 // TODO: Add a static global variable containing the keybinds and whatnot
 public class Input extends MultiKeyListener implements MouseMotionListener, MouseListener {
     private boolean isMousePressed = false;
+    private Point mousePosition;
     private boolean isHover = false;
 
     public boolean isMousePressed() {
@@ -65,6 +67,10 @@ public class Input extends MultiKeyListener implements MouseMotionListener, Mous
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        mousePosition = e.getPoint();
+    }
 
+    public Point getMousePosition() {
+        return mousePosition;
     }
 }

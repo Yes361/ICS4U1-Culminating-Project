@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class AnimationRenderer {
     private final AnimationSprites animationSprites;
-    private String currentAnimationName;
+    private String currentAnimationName = "";
     private AnimationSprite currentAnimation;
     private final JComponent componentReference;
     private float timeElapsed;
@@ -50,7 +50,12 @@ public class AnimationRenderer {
     }
 
     public void setCurrentAnimation(String AnimationName) {
-        currentAnimation = animationSprites.getAnimationSprite(AnimationName);
+        if (!currentAnimationName.equals(AnimationName)) {
+            currentAnimationName = AnimationName;
+            currentAnimation = animationSprites.getAnimationSprite(AnimationName);
+
+            ResetAnimation();
+        }
     }
 
     public String getCurrentAnimationName() {
