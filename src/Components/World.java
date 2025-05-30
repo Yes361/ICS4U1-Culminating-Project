@@ -22,7 +22,6 @@ public class World extends JComponent  {
 
     private void computeCollisions(float delta) {
         Graphics2D entityGraphics2D = (Graphics2D) entityList.get(0).getGraphics();
-//        for (int i = 0;i < )
     }
 
     @Override

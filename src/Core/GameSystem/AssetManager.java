@@ -1,5 +1,10 @@
 package Core.GameSystem;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class AssetManager {
@@ -10,6 +15,18 @@ public class AssetManager {
 
     public static String getSpriteResourcePath(String filePath) {
         return System.getProperty("user.dir") + spriteResourceDirectory + "\\" + filePath;
+    }
+
+    public static BufferedImage getBufferedSprite(String filePath) {
+        try {
+            return ImageIO.read(new File(AssetManager.getSpriteResourcePath(filePath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Image getSprite(String filePath) {
+        return Toolkit.getDefaultToolkit().getImage(AssetManager.getSpriteResourcePath(filePath));
     }
 
     public static String getAudioResourcePath(String filePath) {

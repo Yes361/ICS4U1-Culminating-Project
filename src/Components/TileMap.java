@@ -1,37 +1,82 @@
 package Components;
 
+import javax.imageio.ImageIO;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 public class TileMap {
-    private HashMap<String, Image> tileMap = new HashMap<>();
+    private HashMap<String, BufferedImage> tileMap = new HashMap<>();
 
-    public TileMap(HashMap<String, Image> tileMap) {
+    public TileMap(HashMap<String, BufferedImage> tileMap) {
         this.tileMap = tileMap;
     }
 
     public TileMap() {}
 
     public void addTile(String identifier, Image tile) {
-        this.tileMap.put(identifier, tile);
+        this.tileMap.put(identifier, (BufferedImage) tile);
+    }
+
+    public void addTiles() {
+
+    }
+
+    public void addTilesFromDirectory(String filePath) {
+        File directory = new File(filePath);
+        FilenameFilter fileNameExtensionFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+
+        for (File file : directory.listFiles(fileNameExtensionFilter)) {
+
+        }
+        //        for ()
+    }
+
+    public void addTile(String identifier, String filePath) {
+        // Toolkit.getDefaultToolkit().getImage(filePath)
+        try {
+            this.tileMap.put(identifier, ImageIO.read(new File(filePath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Image getTile(String identifier) {
         return tileMap.get(identifier);
     }
 
-    public Image getTile(int index) {
+    public BufferedImage getTile(int index) {
         return getTiles()[index];
     }
 
-    public Image[] getTiles() {
-        return tileMap.values().toArray(new Image[0]);
+    public BufferedImage[] getTiles() {
+        return tileMap.values().toArray(new BufferedImage[0]);
+    }
+
+    public int getTileCount() {
+        return tileMap.size();
+    }
+
+    public String[] getIdentifiers() {
+        return tileMap.keySet().toArray(new String[0]);
+    }
+
+    public String getIdentifier(int index) {
+        return getIdentifiers()[index];
     }
 
 
-    public HashMap<String, Image> getTileMap() {
+    public HashMap<String, BufferedImage> getTileMap() {
         return tileMap;
     }
 }
