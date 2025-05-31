@@ -6,35 +6,42 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 
-public class TileLayoutPalette extends JGameObject implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class TileLayoutPalette extends JGameObject implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
     private TileMap tileMap = new TileMap();
     private int currentTileIndex = 0;
     private String currentTileName = "";
     private int tileWidth = 0;
     private int tileHeight = 0;
-    private String[][] tileLayout;
     private TileLayoutRenderer tileLayoutRenderer = new TileLayoutRenderer();
     private Point mousePosition;
+    private int currentLayer = 0;
 
     public TileLayoutPalette(TileMap tileMap, int tileWidth, int tileHeight) {
         this.tileMap = tileMap;
         currentTileIndex = 0;
         currentTileName = tileMap.getIdentifier(currentTileIndex);
 
-        tileLayoutRenderer.setTileMap(tileMap);
+        TileLayout tileLayout = new TileLayout(tileMap);
 
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
 
-        tileLayout = new String[500 / tileWidth][500 / tileHeight];
-
-        tileLayoutRenderer.setTileLayout(tileLayout);
+        tileLayout.setTileLayout(new String[tileWidth][tileHeight]);
+        tileLayoutRenderer.addTileLayout(tileLayout);
 
         addMouseListener(this);
         addMouseWheelListener(this);
         addMouseMotionListener(this);
+        addKeyListener(this);
 
         add(tileLayoutRenderer);
+    }
+
+    private void placeTile(int x, int y) {
+        tileLayoutRenderer.getTileLayout(currentLayer).getTileLayout().get(x).set(y, currentTileName);
+
+        tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
+        tileLayoutRenderer.repaint();
     }
 
     @Override
@@ -49,11 +56,7 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     @Override
     public void mousePressed(MouseEvent e) {
-        tileLayout[e.getX() / tileWidth][e.getY() / tileHeight] = currentTileName;
-        tileLayoutRenderer.setTileLayout(tileLayout);
-
-        tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
-        tileLayoutRenderer.repaint();
+        placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
 //        System.out.println(tileLayoutRenderer.getTileLayout().get(e.getX() / tileWidth).get(e.getY() / tileHeight));
     }
 
@@ -80,7 +83,10 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        mousePosition = e.getPoint();
+        repaint();
 
+        placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
     }
 
     @Override
@@ -97,5 +103,20 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
             Image img = tileMap.getTile(currentTileName).getScaledInstance(32, 32, Image.SCALE_SMOOTH);
             g.drawImage(img, mousePosition.x - img.getWidth(this) / 2, mousePosition.y - img.getHeight(this) / 2, this);
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+//        tileLayoutRenderer.addTileLayout(new TileLayout());
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

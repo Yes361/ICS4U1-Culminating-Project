@@ -36,10 +36,12 @@ public class TileMap {
             }
         };
 
-        for (File file : directory.listFiles(fileNameExtensionFilter)) {
+        File[] directoryFiles = directory.listFiles(fileNameExtensionFilter);
 
+        assert directoryFiles != null;
+        for (File file : directoryFiles) {
+            addTile(file.getName(), file.getAbsolutePath());
         }
-        //        for ()
     }
 
     public void addTile(String identifier, String filePath) {

@@ -30,27 +30,25 @@ public class Game extends JFrame {
         tileMap.addTile("WallTop-21", AssetManager.getBufferedSprite("TileMap\\WallTop-21.png.png"));
         tileMap.addTile("WallTop-22", AssetManager.getBufferedSprite("TileMap\\WallTop-22.png.png"));
 
-        tileMap.addTile("TableBottomLeft", AssetManager.getBufferedSprite("TileMap\\Table\\TableBottomLeft.png"));
-        tileMap.addTile("TableBottomMiddle", AssetManager.getBufferedSprite("TileMap\\Table\\TableBottomMiddle.png"));
-        tileMap.addTile("TableBottomRight", AssetManager.getBufferedSprite("TileMap\\Table\\TableBottomRight.png"));
-        tileMap.addTile("TableCenter", AssetManager.getBufferedSprite("TileMap\\Table\\TableCenter.png"));
-        tileMap.addTile("TableMiddleRight", AssetManager.getBufferedSprite("TileMap\\Table\\TableMiddleRight.png"));
-        tileMap.addTile("TableMiddleLeft", AssetManager.getBufferedSprite("TileMap\\Table\\TableMiddleLeft.png"));
-        tileMap.addTile("TableTopLeft", AssetManager.getBufferedSprite("TileMap\\Table\\TableTopLeft.png"));
-        tileMap.addTile("TableTopMiddle", AssetManager.getBufferedSprite("TileMap\\Table\\TableTopMiddle.png"));
-        tileMap.addTile("TableTopRight", AssetManager.getBufferedSprite("TileMap\\Table\\TableTopRight.png"));
+        tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Table"));
 
         tileMap.addTile("Floor1", AssetManager.getBufferedSprite("TileMap\\Floor1.png"));
         tileMap.addTile("Floor2", AssetManager.getBufferedSprite("TileMap\\Floor2.png"));
+
+        tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Bookshelf"));
+        tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Board"));
 
         String[][] tileLayout = new String[][]{
             {"Wall-3", null},
             {"Wall-8", "Wall-9"},
         };
 
+        TileLayout tileLayout1 = new TileLayout();
+        tileLayout1.setTileMap(tileMap);
+        tileLayout1.setTileLayout(tileLayout);
+
         TileLayoutRenderer tileLayoutRenderer = new TileLayoutRenderer();
-        tileLayoutRenderer.setTileMap(tileMap);
-        tileLayoutRenderer.setTileLayout(tileLayout);
+        tileLayoutRenderer.addTileLayout(tileLayout1);
 
 //        System.out.println(tileMap.getTile("Wall-3"));
 
