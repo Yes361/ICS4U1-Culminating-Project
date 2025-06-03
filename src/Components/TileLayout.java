@@ -1,21 +1,27 @@
 package Components;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TileLayout {
+public class TileLayout implements Serializable {
     private int zIndex = -1;
-    public TileMap tileMap = new TileMap();
     private ArrayList<ArrayList<String>> tileLayout = new ArrayList<>();
 
-    public TileLayout() {}
-
-    public TileLayout(TileMap tileMap) {
-        this(tileMap, 0);
+    public TileLayout() {
+        this(0, new ArrayList<>());
     }
 
-    public TileLayout(TileMap tileMap, int zIndex) {
-        this.tileMap = tileMap;
+    public TileLayout(int zIndex) {
+        this(zIndex, new ArrayList<>());
+    }
+
+    public TileLayout(int zIndex, ArrayList<ArrayList<String>> tileLayout) {
         this.zIndex = zIndex;
+        this.tileLayout = tileLayout;
+    }
+
+    public TileLayout clone() {
+        return new TileLayout(zIndex, (ArrayList<ArrayList<String>>) tileLayout.clone());
     }
 
     public ArrayList<ArrayList<String>> getTileLayout() {
@@ -34,14 +40,6 @@ public class TileLayout {
                 this.tileLayout.getLast().add(col);
             }
         }
-    }
-
-    public TileMap getTileMap() {
-        return tileMap;
-    }
-
-    public void setTileMap(TileMap tileMap) {
-        this.tileMap = tileMap;
     }
 
     public int getzIndex() {

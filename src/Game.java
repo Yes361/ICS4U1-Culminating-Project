@@ -1,6 +1,7 @@
 import Components.*;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Utility.EventListener;
 
 import javax.swing.*;
 
@@ -38,38 +39,70 @@ public class Game extends JFrame {
         tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Bookshelf"));
         tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Board"));
 
+        Camera2D camera2D = new Camera2D();
+        camera2D.setBounds(0, 0, getWidth(), getHeight());
+
         String[][] tileLayout = new String[][]{
             {"Wall-3", null},
             {"Wall-8", "Wall-9"},
         };
 
         TileLayout tileLayout1 = new TileLayout();
-        tileLayout1.setTileMap(tileMap);
         tileLayout1.setTileLayout(tileLayout);
 
         TileLayoutRenderer tileLayoutRenderer = new TileLayoutRenderer();
-        tileLayoutRenderer.addTileLayout(tileLayout1);
+        tileLayoutRenderer.setTileMap(tileMap);
+        tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
 
 //        System.out.println(tileMap.getTile("Wall-3"));
 
         Player player = new Player();
         player.setFocusable(true);
         player.grabFocus();
-        root.addChild(player);
+
+        player.onMove(new EventListener() {
+            @Override
+            public void onEvent(Object... args) {
+                float x = (float) args[0];
+                float y = (float) args[1];
+
+                camera2D.setCenter((int) -x + getWidth() / 2 - player.getWidth() / 2, (int) -y + getHeight() / 2 - player.getHeight() / 2);
+            }
+        });
+
+        camera2D.add(player);
 
         tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
         tileLayoutRenderer.repaint();
-//        root.add(tileLayoutRenderer);
+        camera2D.add(tileLayoutRenderer);
 
         Palette palette = new Palette();
         palette.setBounds(0, 0, getWidth(), getHeight());
 //        root.addChild(palette);
 
         TileLayoutPalette tileLayoutPalette = new TileLayoutPalette(tileMap, 32, 32);
-        tileLayoutPalette.setFocusable(true);
-        tileLayoutPalette.grabFocus();
         tileLayoutPalette.setBounds(0, 0, getWidth(), getHeight());
-        root.addChild(tileLayoutPalette);
+        addKeyListener(tileLayoutPalette);
+
+//        root.addChild(tileLayoutPalette);
+
+//        camera2D.setCenter();
+
+        camera2D.setCenter(50, 50);
+
+        AreaTrigger areaTrigger1 = new AreaTrigger(0, 0, 50, 50);
+        camera2D.add(areaTrigger1);
+
+        root.addChild(camera2D);
+
+        World world = new World(tileMap);
+        world.addChildExcludeRender(player);
+        world.addChildExcludeRender(areaTrigger1);
+
+        root.addChildExcludeRender(world);
+
+        JPanel menuPanel = new JPanel();
+
 
         add(root);
     }

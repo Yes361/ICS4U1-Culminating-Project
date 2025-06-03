@@ -5,11 +5,15 @@ import Core.GameSystem.AssetManager;
 import Core.GameSystem.AudioManager;
 import Core.GameSystem.JGameObject;
 import Core.Input.Input;
+import Utility.EventEmitter;
+import Utility.EventListener;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 
-public class Player extends JGameObject {
+public class Player extends JGameObject implements CollisionListener {
+    private EventEmitter eventEmitter = new EventEmitter();
 
     private final Input input = new Input() {
         @Override
@@ -55,7 +59,7 @@ public class Player extends JGameObject {
         );
 
         AnimationSprite LeftAnimation = new AnimationSprite(
-                50,
+                100,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-3.png.png"),
@@ -63,7 +67,7 @@ public class Player extends JGameObject {
         );
 
         AnimationSprite RightAnimation = new AnimationSprite(
-                50,
+                100,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-3.png.png"),
@@ -96,6 +100,10 @@ public class Player extends JGameObject {
         repaint();
     }
 
+    public void onMove(EventListener eventListener) {
+        eventEmitter.subscribe("onMove", eventListener);
+    }
+
 
     public void update(float delta) {
         float speed = 0.5f;
@@ -103,17 +111,22 @@ public class Player extends JGameObject {
         if (input.isKeyPressed(KeyEvent.VK_UP)) {
             y -= speed * delta;
             animationRenderer.setCurrentAnimation("down");
+            eventEmitter.emit("onMove", x, y);
         } else if (input.isKeyPressed(KeyEvent.VK_DOWN)) {
             y += speed * delta;
             animationRenderer.setCurrentAnimation("up");
+            eventEmitter.emit("onMove", x, y);
         } else if (input.isKeyPressed(KeyEvent.VK_LEFT)) {
             x -= speed * delta;
             animationRenderer.setCurrentAnimation("left");
+            eventEmitter.emit("onMove", x, y);
         } else if (input.isKeyPressed(KeyEvent.VK_RIGHT)) {
             x += speed * delta;
             animationRenderer.setCurrentAnimation("right");
+            eventEmitter.emit("onMove", x, y);
         } else {
-            animationRenderer.setCurrentAnimation("idle");
+//            animationRenderer.setCurrentAnimation("idle");
+            animationRenderer.skipToFirstFrame();
         }
 
         setLocation((int) x, (int) y);
@@ -121,11 +134,23 @@ public class Player extends JGameObject {
         animationRenderer.update(delta);
     }
 
+
+
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         animationRenderer.render(graphics2D, getWidth(), getHeight());
+    }
+
+    @Override
+    public void onCollision(Object other) {
+
+    }
+
+    @Override
+    public Rectangle2D getBoundRect() {
+        return getBounds().getBounds2D();
     }
 }

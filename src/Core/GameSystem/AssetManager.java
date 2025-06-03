@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.HashMap;
 
 public class AssetManager {
@@ -12,6 +15,14 @@ public class AssetManager {
     private static String spriteResourceDirectory = "\\src\\Resources\\Sprites";
     private static String audioResourceDirectory = "\\src\\Resources\\Audio";
     private static HashMap<String, String> customDirectories = new HashMap<>();
+
+    public static void setCustomDirectory(String identifier, String path) {
+        customDirectories.put(identifier, path);
+    }
+
+    public static String getCustomDirectoryPath(String directoryIdentifier, String filePath) {
+        return System.getProperty("user.dir") + customDirectories.get(directoryIdentifier) + "\\" + filePath;
+    }
 
     public static String getSpriteResourcePath(String filePath) {
         return System.getProperty("user.dir") + spriteResourceDirectory + "\\" + filePath;
@@ -73,5 +84,15 @@ public class AssetManager {
 
     public static void setAudioResourceDirectory(String audioResourceDirectory) {
         AssetManager.audioResourceDirectory = audioResourceDirectory;
+    }
+
+    public static void getAvailableFileName() {
+
+    }
+
+    public static String generateTimestampedFilename(String directory) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-hhmmss");
+        return String.format("%s\\%s.txt", directory, dateTimeFormatter.format(now));
     }
 }

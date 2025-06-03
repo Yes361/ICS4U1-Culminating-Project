@@ -1,5 +1,6 @@
 package Components;
 
+import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
 
 import java.awt.*;
@@ -21,13 +22,22 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         currentTileIndex = 0;
         currentTileName = tileMap.getIdentifier(currentTileIndex);
 
-        TileLayout tileLayout = new TileLayout(tileMap);
+        TileLayout tileLayout1 = new TileLayout();
+        TileLayout tileLayout2 = new TileLayout();
+        TileLayout tileLayout3 = new TileLayout();
 
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
 
-        tileLayout.setTileLayout(new String[tileWidth][tileHeight]);
-        tileLayoutRenderer.addTileLayout(tileLayout);
+        tileLayout1.setTileLayout(new String[tileWidth][tileHeight]);
+        tileLayout2.setTileLayout(new String[tileWidth][tileHeight]);
+        tileLayout3.setTileLayout(new String[tileWidth][tileHeight]);
+
+        tileLayoutRenderer.addTileLayout(tileLayout1);
+        tileLayoutRenderer.addTileLayout(tileLayout2);
+        tileLayoutRenderer.addTileLayout(tileLayout3);
+
+        tileLayoutRenderer.setTileMap(tileMap);
 
         addMouseListener(this);
         addMouseWheelListener(this);
@@ -112,7 +122,13 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     @Override
     public void keyPressed(KeyEvent e) {
-//        tileLayoutRenderer.addTileLayout(new TileLayout());
+        if (e.getKeyCode() == KeyEvent.VK_W) {
+            currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
+        } else if (e.getKeyCode() == KeyEvent.VK_P) {
+            tileLayoutRenderer.saveLayouts(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+        }
     }
 
     @Override

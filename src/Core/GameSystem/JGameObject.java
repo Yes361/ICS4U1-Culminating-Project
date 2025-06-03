@@ -30,6 +30,13 @@ public class JGameObject extends JComponent {
         this.parent = parent;
     }
 
+
+    public void addChildExcludeRender(JGameObject gameObject) {
+        children.add(gameObject);
+
+        gameObject.setParentNode(this);
+    }
+
     public void addChild(JGameObject gameObject) {
         children.add(gameObject);
 
@@ -51,6 +58,16 @@ public class JGameObject extends JComponent {
         return null;
     }
 
+    public <T> List<T> getChildren(Class<T> classType) {
+        List<T> childrenClassType = new ArrayList<T>();
+        for (JGameObject child : children) {
+            if (classType.isInstance(child)) {
+                childrenClassType.add(classType.cast(child));
+            }
+        }
+        return childrenClassType;
+    }
+
     public int getChildCount() {
         return children.size();
     }
@@ -64,6 +81,7 @@ public class JGameObject extends JComponent {
 
         gameObject.setParentNode(null);
 
+        // TODO: if added by addChildExcludeRender
         super.remove(gameObject);
     }
 

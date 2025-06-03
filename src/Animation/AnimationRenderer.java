@@ -14,6 +14,7 @@ public class AnimationRenderer {
     private float prevFrameElapsed;
     private int currentFrame;
     private final EventEmitter eventEmitter = new EventEmitter();
+    private boolean paused = false;
 
 
     public AnimationRenderer(JComponent componentReference, AnimationSprites animationSprites) {
@@ -34,7 +35,9 @@ public class AnimationRenderer {
             return;
         }
 
-        timeElapsed += delta;
+        if (!paused) {
+            timeElapsed += delta;
+        }
 
         if (timeElapsed - prevFrameElapsed > getCurrentSprite().duration()) {
             prevFrameElapsed = timeElapsed;
@@ -45,11 +48,37 @@ public class AnimationRenderer {
         }
     }
 
+    public void skipToFrame(int index) {
+        currentFrame = index;
+    }
+
+    public void skipToLastFrame() {
+        currentFrame = currentAnimation.getSpriteCount() - 1;
+    }
+
+    public void skipToFirstFrame() {
+        currentFrame = 0;
+    }
+
+    public int getFrameCount() {
+        return currentAnimation.getSpriteCount();
+    }
+
+    public void togglePaused() {
+        paused = !paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
     public void onAnimationEvent(AnimationEvent event) {
         eventEmitter.subscribe("onAnimationChange", event);
     }
 
     public void setCurrentAnimation(String AnimationName) {
+        paused = false;
+
         if (!currentAnimationName.equals(AnimationName)) {
             currentAnimationName = AnimationName;
             currentAnimation = animationSprites.getAnimationSprite(AnimationName);
@@ -80,6 +109,7 @@ public class AnimationRenderer {
     }
 
     public Graphics render(Graphics graphics, int width, int height) {
+//        graphics.drawImage(, 0, 0, width, height, componentReference);
         if (currentAnimation != null) {
             Image currentFrame = getCurrentSprite().image();
             graphics.drawImage(currentFrame, 0, 0, width, height, componentReference);
