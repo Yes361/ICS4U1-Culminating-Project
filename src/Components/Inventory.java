@@ -1,13 +1,19 @@
 package Components;
 
+import Utility.Console;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 // TODO: Expanded inventory
-public class Inventory extends JComponent {
+public class Inventory extends JPanel {
     private ArrayList<InventoryItem> inventoryItems = new ArrayList<>();
-    private Dimension inventorySlotDimensions = new Dimension(50, 50);
+    private Dimension inventorySlotDimensions = new Dimension(32, 32);
+
+    public Inventory() {
+        setLayout(null);
+    }
 
     public ArrayList<InventoryItem> getInventoryItems() {
         return inventoryItems;
@@ -21,16 +27,23 @@ public class Inventory extends JComponent {
         inventoryItems.set(index, inventoryItem);
     }
 
+    public void addInventoryItem(InventoryItem inventoryItem) {
+        inventoryItems.add(inventoryItem);
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         int width = inventorySlotDimensions.width;
         int height = inventorySlotDimensions.height;
+
         for (int i = 0;i < inventoryItems.size();i++) {
-            g.drawRect(getX(), getY(), width, height);
+//            Console.println(250, getY(), width, height);
+            g.drawRect(0, 0, width, height);
             Image inventoryImage = inventoryItems.get(i).getInventoryTileSprite().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            g.drawImage(inventoryImage, getX(), getY(), this);
+            g.drawImage(inventoryImage, 0, 0, this);
         }
     }
 }

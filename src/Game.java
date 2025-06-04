@@ -1,9 +1,12 @@
 import Components.*;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Utility.Console;
 import Utility.EventListener;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 public class Game extends JFrame {
     JGameObject root;
@@ -11,8 +14,11 @@ public class Game extends JFrame {
     public Game() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 500);
+        setLayout(null);
 
         root = new JGameObject();
+        root.setLayout(null);
+
         root.setBounds(0, 0, getWidth(), getHeight());
 
         TileMap tileMap = new TileMap();
@@ -54,8 +60,6 @@ public class Game extends JFrame {
         tileLayoutRenderer.setTileMap(tileMap);
         tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
 
-//        System.out.println(tileMap.getTile("Wall-3"));
-
         Player player = new Player();
         player.setFocusable(true);
         player.grabFocus();
@@ -86,8 +90,7 @@ public class Game extends JFrame {
 
 //        root.addChild(tileLayoutPalette);
 
-//        camera2D.setCenter();
-
+//      TODO: Make Camera2D anchorable to a JComponent
         camera2D.setCenter(50, 50);
 
         AreaTrigger areaTrigger1 = new AreaTrigger(0, 0, 50, 50);
@@ -101,8 +104,22 @@ public class Game extends JFrame {
 
         root.addChildExcludeRender(world);
 
-        JPanel menuPanel = new JPanel();
+        tileLayoutRenderer.addTileSprite(new TileLayoutSprite(0,0,new TileLayout(new String[][]{{"Wall-3"}})));
 
+        FlowerWateringMinigame flowerWateringMinigame = new FlowerWateringMinigame();
+        flowerWateringMinigame.setBounds(0, 0, getWidth(), getHeight());
+        root.addChild(flowerWateringMinigame);
+
+        Inventory inventory = new Inventory();
+        inventory.setBounds(0, 400, 500, 100);
+//        inventory.setBackground(Color.GRAY);
+
+        InventoryItem inventoryItem = new InventoryItem(AssetManager.getBufferedSprite("TileMap\\Floor1.png"), AssetManager.getBufferedSprite("TileMap\\Floor1.png"), "FloorItem");
+        inventory.addInventoryItem(inventoryItem);
+
+//        add(inventory);
+        root.add(inventory);
+        root.setComponentZOrder(inventory, 0);
 
         add(root);
     }

@@ -2,6 +2,7 @@ package Components;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TileLayout implements Serializable {
     private int zIndex = -1;
@@ -9,6 +10,15 @@ public class TileLayout implements Serializable {
 
     public TileLayout() {
         this(0, new ArrayList<>());
+    }
+
+    public TileLayout(String[][] tileLayout) {
+        zIndex = 0;
+        setTileLayout(tileLayout);
+    }
+
+    public TileLayout(ArrayList<ArrayList<String>> tileLayout) {
+        this(0, tileLayout);
     }
 
     public TileLayout(int zIndex) {

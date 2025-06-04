@@ -1,7 +1,8 @@
 package Animation;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
-public record FrameSprite(Image image, float duration) {
+public record FrameSprite(BufferedImage image, float duration) {
 
 }

@@ -36,6 +36,15 @@ public class AssetManager {
         }
     }
 
+    public static Image getBufferedSprite(String filePath, int width, int height) {
+        return getBufferedSprite(filePath).getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    }
+
+    public static Image getBufferedSpriteAspectRatioLocked(String filePath) {
+        return getBufferedSprite(filePath).getScaledInstance(0, 0, Image.SCALE_SMOOTH);
+    }
+
+
     public static Image getSprite(String filePath) {
         return Toolkit.getDefaultToolkit().getImage(AssetManager.getSpriteResourcePath(filePath));
     }

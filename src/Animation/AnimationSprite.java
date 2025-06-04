@@ -1,6 +1,9 @@
 package Animation;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +23,11 @@ public class AnimationSprite {
     }
 
     public void addSprite(String filePath, float duration) {
-        Image image = Toolkit.getDefaultToolkit().getImage(filePath);
-        Sprites.add(new FrameSprite(image, duration));
+        try {
+            Sprites.add(new FrameSprite(ImageIO.read(new File(filePath)), duration));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public FrameSprite getSprite(int index) {

@@ -111,7 +111,8 @@ public class AnimationRenderer {
     public Graphics render(Graphics graphics, int width, int height) {
 //        graphics.drawImage(, 0, 0, width, height, componentReference);
         if (currentAnimation != null) {
-            Image currentFrame = getCurrentSprite().image();
+            Image currentFrame = getCurrentSprite().image().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            graphics.drawRect(0, 0, width, height);
             graphics.drawImage(currentFrame, 0, 0, width, height, componentReference);
         }
 
