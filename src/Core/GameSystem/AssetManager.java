@@ -14,7 +14,9 @@ public class AssetManager {
     private static String resourceDirectory = "\\src\\Resources";
     private static String spriteResourceDirectory = "\\src\\Resources\\Sprites";
     private static String audioResourceDirectory = "\\src\\Resources\\Audio";
+    private static String iconResourceDirectory = "\\src\\Resources\\Icons";
     private static HashMap<String, String> customDirectories = new HashMap<>();
+    private static HashMap<String, Font> fonts = new HashMap<>();
 
     public static void setCustomDirectory(String identifier, String path) {
         customDirectories.put(identifier, path);
@@ -22,6 +24,10 @@ public class AssetManager {
 
     public static String getCustomDirectoryPath(String directoryIdentifier, String filePath) {
         return System.getProperty("user.dir") + customDirectories.get(directoryIdentifier) + "\\" + filePath;
+    }
+
+    public static String getIconResourceDirectory(String filePath) {
+        return System.getProperty("user.dir") + iconResourceDirectory + "\\" + filePath;
     }
 
     public static String getSpriteResourcePath(String filePath) {
@@ -93,6 +99,20 @@ public class AssetManager {
 
     public static void setAudioResourceDirectory(String audioResourceDirectory) {
         AssetManager.audioResourceDirectory = audioResourceDirectory;
+    }
+
+    public static void loadFont(String identifier, File fontFile) {
+        try {
+            Font newFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+            fonts.put(identifier, newFont);
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static Font getFont(String identifier) {
+        return fonts.get(identifier);
     }
 
     public static void getAvailableFileName() {

@@ -2,6 +2,8 @@ package Components;
 
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Utility.Console;
+import Utility.GraphicUtilies;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +14,14 @@ public class FlowerWateringMinigame extends JGameObject implements MouseListener
     private float[] pH = new float[3];
 
     public FlowerWateringMinigame() {
+        addMouseListener(this);
+
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-//        ImageIcon
 
         g.drawImage(AssetManager.getBufferedSprite("PlantPot-1.png", 64, 128), 0, 0, this);
         g.drawImage(AssetManager.getBufferedSprite("PlantPot-1.png", 64, 128), 100, 0, this);
@@ -28,9 +30,17 @@ public class FlowerWateringMinigame extends JGameObject implements MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-//        if (e.getPoint().x) {
-//
-//        }
+        if (GraphicUtilies.containsPoint(e.getPoint(), 0, 0, 64, 128)) {
+            Console.println(1);
+        }
+
+        if (GraphicUtilies.containsPoint(e.getPoint(), 100, 0, 64, 128)) {
+            Console.println(2);
+        }
+
+        if (GraphicUtilies.containsPoint(e.getPoint(), 200, 0, 64, 128)) {
+            Console.println(3);
+        }
     }
 
     @Override

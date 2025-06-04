@@ -10,13 +10,13 @@ public class Console {
         print(" ", "\n", args);
     }
 
-    public static void print(String seperator, String end, Object ...args) {
+    public static void print(String separator, String end, Object ...args) {
         for (int i = 0; i < args.length; i++) {
             System.out.print(args[i]);
             if (i != args.length - 1) {
-                System.out.print(seperator);
+                System.out.print(separator);
             }
         }
-        System.out.println(end);
+        System.out.print(end);
     }
 }

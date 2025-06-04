@@ -4,8 +4,15 @@ import Core.GameSystem.JGameObject;
 import Utility.Console;
 import Utility.EventListener;
 
+import javax.sound.sampled.Line;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class Game extends JFrame {
@@ -106,9 +113,9 @@ public class Game extends JFrame {
 
         tileLayoutRenderer.addTileSprite(new TileLayoutSprite(0,0,new TileLayout(new String[][]{{"Wall-3"}})));
 
-        FlowerWateringMinigame flowerWateringMinigame = new FlowerWateringMinigame();
-        flowerWateringMinigame.setBounds(0, 0, getWidth(), getHeight());
-        root.addChild(flowerWateringMinigame);
+//        FlowerWateringMinigame flowerWateringMinigame = new FlowerWateringMinigame();
+//        flowerWateringMinigame.setBounds(0, 0, getWidth(), getHeight());
+//        root.addChild(flowerWateringMinigame);
 
         Inventory inventory = new Inventory();
         inventory.setBounds(0, 400, 500, 100);
@@ -121,7 +128,9 @@ public class Game extends JFrame {
         root.add(inventory);
         root.setComponentZOrder(inventory, 0);
 
-        add(root);
+//        add(root);
+
+        add(new MenuScreen());
     }
 
     public void UpdateHandler() {
