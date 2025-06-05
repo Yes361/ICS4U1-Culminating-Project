@@ -17,6 +17,7 @@ public class AssetManager {
     private static String iconResourceDirectory = "\\src\\Resources\\Icons";
     private static HashMap<String, String> customDirectories = new HashMap<>();
     private static HashMap<String, Font> fonts = new HashMap<>();
+//    private static HashMap<String, BufferedImage>
 
     public static void setCustomDirectory(String identifier, String path) {
         customDirectories.put(identifier, path);

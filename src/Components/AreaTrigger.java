@@ -5,9 +5,11 @@ import Utility.EventEmitter;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 public class AreaTrigger extends JGameObject implements CollisionListener {
-    private EventEmitter eventEmitter = new EventEmitter();
+//    private EventEmitter eventEmitter = new EventEmitter();
+    private ArrayList<Object> CollidedObjects = new ArrayList<>();
 
     public AreaTrigger() {}
 
@@ -21,7 +23,7 @@ public class AreaTrigger extends JGameObject implements CollisionListener {
 
     @Override
     public void onCollision(Object other) {
-//        System.out.println("wowwwwwww");
+
     }
 
     @Override

@@ -4,16 +4,10 @@ import Core.GameSystem.JGameObject;
 import Utility.Console;
 import Utility.EventListener;
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.io.File;
 
 public class Game extends JFrame {
     JGameObject root;
@@ -22,6 +16,8 @@ public class Game extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 500);
         setLayout(null);
+
+        initializeAssets();
 
         root = new JGameObject();
         root.setLayout(null);
@@ -128,9 +124,46 @@ public class Game extends JFrame {
         root.add(inventory);
         root.setComponentZOrder(inventory, 0);
 
+        TextDialogDisplay textDialogDisplay = new TextDialogDisplay();
+
+        root.add(textDialogDisplay);
+        root.setComponentZOrder(textDialogDisplay, 0);
+
 //        add(root);
 
-        add(new MenuScreen());
+//        add(new MenuScreen());
+
+        add(new MinigameScreen());
+
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
+    }
+
+    public void initializeAssets() {
+        AssetManager.loadFont("LibreBaskerville", new File(AssetManager.getResourceDirectory("Fonts\\LibreBaskerville-Regular.ttf")));
+    }
+
+    public void initializePanels() {
+
     }
 
     public void UpdateHandler() {

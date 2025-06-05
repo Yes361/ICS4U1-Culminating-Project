@@ -1,5 +1,6 @@
 package Animation.Tween;
 
 public interface TweenListener {
-    public void onUpdate(float value);
+    void onUpdate(float value);
+    void onIteration(int iteration);
 }

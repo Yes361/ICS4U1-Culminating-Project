@@ -21,6 +21,16 @@ public class AnimationTweenBuilder {
         return this;
     }
 
+    public AnimationTweenBuilder setDuration(float duration) {
+        this.animationDuration = duration;
+        return this;
+    }
+
+    public AnimationTweenBuilder setLoop(boolean isLoop) {
+        this.loop = isLoop;
+        return this;
+    }
+
     public AnimationTweenBuilder setDirection(AnimationTween.AnimationProperties animationDirection) {
         this.animationDirection = animationDirection;
         return this;

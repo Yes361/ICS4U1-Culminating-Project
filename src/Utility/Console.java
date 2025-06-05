@@ -3,7 +3,7 @@ package Utility;
 // TODO: Add input
 public class Console {
     public static void print(Object ...args) {
-        print(" ", "\n", args);
+        print(" ", "", args);
     }
 
     public static void println(Object ...args) {

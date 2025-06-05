@@ -1,4 +1,5 @@
 import Core.GameSystem.AssetManager;
+import Core.GameSystem.JGameObjectInterface;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -11,14 +12,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-public class MenuScreen extends JPanel {
+public class MenuScreen extends JPanel implements JGameObjectInterface {
     public MenuScreen() {
         createMenuScreen();
     }
 
     public void createMenuScreen() {
-//        LayoutManager layoutManagerMenu = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-//        setLayout();
+        BoxLayout layoutManagerMenu = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        setLayout(layoutManagerMenu);
+
+//        set
 
         Container container = new Container();
         LayoutManager layoutManager = new BoxLayout(container, BoxLayout.PAGE_AXIS);
@@ -29,7 +32,33 @@ public class MenuScreen extends JPanel {
 
 //        ButtonGroup menuButtonGroup = new ButtonGroup();
 
-        container.add(createMenuButton("New Game", null));
+        container.add(createMenuButton("New Game", new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setVisible(false);
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        }));
         container.add(Box.createVerticalStrut(20));
 
         container.add(createMenuButton("Save Files", null));
@@ -44,6 +73,13 @@ public class MenuScreen extends JPanel {
         add(AlchemyIcon);
 
         add(container);
+
+//        ImageIcon academiaBackgroundIcon = new ImageIcon(AssetManager.getBufferedSprite("Icons\\academia-background.png", 256,  256));
+//        JLabel academiaBackground = new JLabel(academiaBackgroundIcon);
+//        academiaBackground.setBounds(0, 0, getWidth(), getHeight());
+//
+//        add(academiaBackground);
+//        setComponentZOrder(academiaBackground, 0);
     }
 
     public JButton createMenuButton(String label, MouseListener buttonMouseListener) {
@@ -55,6 +91,7 @@ public class MenuScreen extends JPanel {
 //        button.set
 //        button.setFont(new Font("Arial", ))
 
+//      TODO: Add in the rest
         button.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -63,7 +100,7 @@ public class MenuScreen extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-
+                buttonMouseListener.mousePressed(e);
             }
 
             @Override
@@ -88,5 +125,12 @@ public class MenuScreen extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        g.drawImage(AssetManager.getBufferedSprite("Icons\\academia-background.png", getWidth(),  getHeight()), 0, 0, this);
+    }
+
+    @Override
+    public void update(float delta) {
+
     }
 }

@@ -1,5 +1,7 @@
 package Animation.Tween;
 
+import Utility.MathUtilities;
+
 public class AnimationTween {
     private Tween type;
     private float start;
@@ -7,11 +9,13 @@ public class AnimationTween {
     private float value;
     private boolean loop;
     private int animationIteration;
+    private int currentIteration = 0;
     private AnimationProperties animationDirection;
     private float animationDuration;
     private boolean currentDirection;
     private float timeElapsed = 0;
     private float animationElapsed = 0;
+    private boolean isPlaying = true;
     private TweenListener callback;
 
     public enum Tween {
@@ -56,9 +60,19 @@ public class AnimationTween {
 
         timeElapsed = 0;
         animationElapsed = 0;
+        currentIteration = 0;
+        isPlaying = true;
     }
 
     public void update(float delta) {
+        if (animationIteration > 0 && !loop) {
+            return;
+        }
+
+        if (currentIteration > animationIteration) {
+            return;
+        }
+
         switch (type) {
             case LINEAR:
                 value = animationElapsed / animationDuration;
@@ -76,9 +90,9 @@ public class AnimationTween {
         }
 
         timeElapsed += delta;
+        isPlaying = !(value > 1 || value < 0);
 
         if (value > 1 || value < 0) {
-
             if (animationDirection == AnimationProperties.REVERSED_DIRECTION) {
                 currentDirection = !currentDirection;
                 if (currentDirection) {
@@ -89,11 +103,25 @@ public class AnimationTween {
             } else {
                 animationElapsed = 0;
             }
+
+            value = MathUtilities.constrain(0, 1, value);
+
+            currentIteration++;
+
+            if (callback != null) {
+                callback.onIteration(currentIteration);
+            }
         }
 
         if (callback != null) {
             callback.onUpdate(getLerpValue());
         }
+    }
+
+    public void complete() {
+//        value = 1;
+        animationElapsed = animationDuration;
+        isPlaying = true;
     }
 
     // TODO: Possible implementation with Java Swing timer?
@@ -107,5 +135,9 @@ public class AnimationTween {
 
     public float getLerpValue() {
         return (end - start) * value + start;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 }

@@ -1,8 +1,10 @@
 package Core.GameSystem;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class JGameObject extends JComponent {
     protected JGameObject parent;
@@ -10,9 +12,7 @@ public class JGameObject extends JComponent {
 
     public JGameObject() {}
 
-    public void update(float delta) {
-
-    };
+    public void update(float delta) {};
 
     public void UpdateHandler(float delta) {
         update(delta);
@@ -20,6 +20,13 @@ public class JGameObject extends JComponent {
         for (JGameObject child : children) {
             child.UpdateHandler(delta);
         }
+
+        getComponentChildren(JGameObjectInterface.class).forEach(new Consumer<JGameObjectInterface>() {
+            @Override
+            public void accept(JGameObjectInterface gameObject) {
+                gameObject.update(delta);
+            }
+        });
     }
 
     public JGameObject getParentNode() {
@@ -43,6 +50,17 @@ public class JGameObject extends JComponent {
         gameObject.setParentNode(this);
 
         super.add(gameObject);
+    }
+
+    public <T> List<T> getComponentChildren(Class<T> classType) {
+        List<T> childrenClassType = new ArrayList<T>();
+        for (Component child : getComponents()) {
+            if (classType.isInstance(child)) {
+                childrenClassType.add(classType.cast(child));
+            }
+        }
+
+        return childrenClassType;
     }
 
     public JGameObject getChild(int index) {

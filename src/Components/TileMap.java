@@ -1,7 +1,6 @@
 package Components;
 
 import javax.imageio.ImageIO;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -73,7 +72,6 @@ public class TileMap {
     public String getIdentifier(int index) {
         return getIdentifiers()[index];
     }
-
 
     public HashMap<String, BufferedImage> getTileMap() {
         return tileMap;

@@ -22,4 +22,16 @@ public class GraphicUtilies {
         transformOp.filter(image, rotatedImage);
         return rotatedImage;
     }
+
+    public static Graphics2D rotateGraphics(Graphics graphics, float degree) {
+        Graphics2D graphics2D = (Graphics2D) graphics;
+
+//        AffineTransform old = graphics2D.getTransform();
+//        old.rotate(Math.toRadians(degree));
+//        graphics2D.setTransform(old);
+
+        graphics2D.rotate(Math.toRadians(degree));
+
+        return graphics2D;
+    }
 }
