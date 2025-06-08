@@ -41,7 +41,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
             @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
-
+                add(new WorldScreen());
             }
 
             @Override

@@ -3,6 +3,7 @@ package Components;
 import Core.GameSystem.JGameObject;
 import Core.GameSystem.JLabelExtended;
 import Utility.Console;
+import Utility.RandomUtilities;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -10,30 +11,114 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Random;
 
 public class MemoryCardMinigame extends JGameObject implements MouseListener {
-    JPanel panel = new JPanel();
+    JPanel panel;
+    private int firstX = -1;
+    private int firstY = -1;
+    private int secondX = -1;
+    private int secondY = -1;
+
+    private boolean[][] discovered;
+    private JLabelExtended[][] cards;
+    private float delay = 10;
+    private boolean clicked = false;
+    private float clickDelay = 1000;
 
     public MemoryCardMinigame() {
+        setBounds(0, 0,500,500);
+        setLayout(null);
+
         createMemoryCards();
-//        add(panel);
     }
 
     public void createMemoryCards() {
-        for (int i = 0;i < 5;i++) {
-            for (int j = 0;j < 5;j++) {
-                JLabelExtended label = new JLabelExtended("What");
-                label.setRotation(45);
-//                JLabel label = new JLabel("What");
-                int x = i;
-                int y = j;
-//                label.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
-                label.setBounds(i * 50, j * 50, 45, 45);
+        panel = new JPanel();
+        panel.setBounds(0, 0, 500, 500);
+
+        int cardDeckWidth = 4;
+        int cardDeckHeight = 5;
+
+        panel.setLayout(new GridLayout(cardDeckWidth, cardDeckHeight));
+        String[] cardItems = {
+            "Isomer",
+            "Catalyst",
+            "Electronegativity",
+            "Precipitate",
+            "Covalent",
+            "Alkene",
+            "Titration",
+            "Orbital",
+            "Stoichiometry",
+            "Radical"
+        };
+
+        int[][] cardContents = new int[cardDeckWidth][cardDeckHeight];
+        discovered = new boolean[cardDeckWidth][cardDeckHeight];
+        cards = new JLabelExtended[cardDeckWidth][cardDeckHeight];
+
+        Random rand = new Random();
+
+        for (int i = 0;i < cardItems.length;i++) {
+            int x, y;
+
+            do {
+                x = rand.nextInt(0, cardDeckWidth);
+                y = rand.nextInt(0, cardDeckHeight);
+            } while (cardContents[x][y] != 0);
+
+            cardContents[x][y] = i + 1;
+
+            do {
+                x = rand.nextInt(0, cardDeckWidth);
+                y = rand.nextInt(0, cardDeckHeight);
+            } while (cardContents[x][y] != 0);
+
+            cardContents[x][y] = i + 1;
+        }
+
+
+        add(panel);
+
+        for (int i = 0;i < cardDeckWidth;i++) {
+            for (int j = 0;j < cardDeckHeight;j++) {
+                JLabelExtended label = new JLabelExtended("");
+                label.setOpaque(true);
+                label.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
+
+                int row = i;
+                int col = j;
 
                 label.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        Console.println(x, y);
+                        if (firstX == -1 && firstY == -1) {
+                            firstX = row;
+                            firstY = col;
+
+                            cards[row][col].setText(cardItems[cardContents[firstX][firstY] - 1]);
+                        } else if (secondX == -1 && secondY == -1) {
+                            secondX = row;
+                            secondY = col;
+
+                            cards[row][col].setText(cardItems[cardContents[secondX][secondY] - 1]);
+
+                            if (cardContents[firstX][firstY] == cardContents[secondX][secondY]) {
+                                cards[firstX][firstY].setBackground(Color.GREEN);
+                                cards[secondX][secondY].setBackground(Color.GREEN);
+
+                                firstX = -1;
+                                firstY = -1;
+                                secondX = -1;
+                                secondY = -1;
+                            } else {
+                                delay = 0;
+                                clicked = true;
+                            }
+                        }
+
+
                     }
 
                     @Override
@@ -58,7 +143,8 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
                 });
 
 //                panel.add(label);
-                add(label);
+                cards[i][j] = label;
+                panel.add(label);
             }
         }
     }
@@ -67,12 +153,23 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
     public void update(float delta) {
         super.update(delta);
 
-        Console.println("what");
+        delay += delta;
 
-        for (Component component : getComponents()) {
-            if (component instanceof JLabelExtended) {
-                JLabelExtended labelExtended = (JLabelExtended) component;
-                labelExtended.setRotation((float) (labelExtended.getRotation() + 0.2));
+        if (delay > clickDelay && clicked) {
+            cards[firstX][firstY].setText("");
+            cards[secondX][secondY].setText("");
+
+            firstX = -1;
+            firstY = -1;
+            secondX = -1;
+            secondY = -1;
+
+            clicked = false;
+        }
+
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JLabelExtended labelExtended) {
+
             }
         }
     }

@@ -6,19 +6,20 @@ import Utility.Console;
 import javax.swing.*;
 
 public class MinigameScreen extends JPanel implements JGameObjectInterface {
-    JGameObject root = new JGameObject();
+    JGameObject root;
 
     public MinigameScreen() {
         setBounds(0, 0, 500, 500);
         setVisible(true);
         setLayout(null);
 
+        root = new JGameObject();
+
         root.setLayout(null);
         root.setBounds(0, 0, getWidth(), getHeight());
         root.setVisible(true);
 
         MemoryCardMinigame memoryCardMinigame = new MemoryCardMinigame();
-        memoryCardMinigame.setBounds(0, 0, getWidth(), getHeight());
 
         root.addChild(memoryCardMinigame);
 
@@ -27,8 +28,6 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
 
     @Override
     public void update(float delta) {
-        root.update(delta);
-
-        Console.println("wa");
+        root.UpdateHandler(delta);
     }
 }

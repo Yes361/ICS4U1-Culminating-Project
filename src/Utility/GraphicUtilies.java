@@ -25,12 +25,30 @@ public class GraphicUtilies {
 
     public static Graphics2D rotateGraphics(Graphics graphics, float degree) {
         Graphics2D graphics2D = (Graphics2D) graphics;
+        AffineTransform old = graphics2D.getTransform();
+        old.rotate(Math.toRadians(degree));
+        graphics2D.setTransform(old);
+        return graphics2D;
+    }
 
-//        AffineTransform old = graphics2D.getTransform();
-//        old.rotate(Math.toRadians(degree));
-//        graphics2D.setTransform(old);
+    public static Graphics2D rotateGraphics(Graphics graphics, int x, int y, float degree) {
+        Graphics2D graphics2D = (Graphics2D) graphics;
+        graphics2D.rotate(Math.toRadians(degree), x, y);
+        return graphics2D;
+    }
 
-        graphics2D.rotate(Math.toRadians(degree));
+    public static Graphics2D rotateYGraphics(Graphics graphics, int x, int y, float degree) {
+        Graphics2D graphics2D = (Graphics2D) graphics;
+
+        double angle = Math.toRadians(degree);
+        double scaleX = Math.cos(angle);
+        AffineTransform affineTransform = graphics2D.getTransform();
+
+        affineTransform.translate(x, y);
+        affineTransform.scale(scaleX, 1.0);
+        affineTransform.translate(-x, -y);
+
+        graphics2D.setTransform(affineTransform);
 
         return graphics2D;
     }

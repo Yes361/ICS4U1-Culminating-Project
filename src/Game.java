@@ -20,25 +20,24 @@ public class Game extends JFrame {
         initializeAssets();
 
         root = new JGameObject();
-        root.setLayout(null);
 
         root.setBounds(0, 0, getWidth(), getHeight());
 
         TileMap tileMap = new TileMap();
-        tileMap.addTile("Pot-23", AssetManager.getBufferedSprite("TileMap\\Pot-23.png.png"));
-        tileMap.addTile("Wall-3", AssetManager.getBufferedSprite("TileMap\\Wall-3.png.png"));
-        tileMap.addTile("Wall-4", AssetManager.getBufferedSprite("TileMap\\Wall-4.png.png"));
-        tileMap.addTile("Wall-5", AssetManager.getBufferedSprite("TileMap\\Wall-5.png.png"));
-        tileMap.addTile("Wall-7", AssetManager.getBufferedSprite("TileMap\\Wall-7.png.png"));
-        tileMap.addTile("Wall-8", AssetManager.getBufferedSprite("TileMap\\Wall-8.png.png"));
-        tileMap.addTile("Wall-9", AssetManager.getBufferedSprite("TileMap\\Wall-9.png.png"));
-        tileMap.addTile("WallTop-13", AssetManager.getBufferedSprite("TileMap\\WallTop-13.png.png"));
-        tileMap.addTile("WallTop-14", AssetManager.getBufferedSprite("TileMap\\WallTop-14.png.png"));
-        tileMap.addTile("WallTop-15", AssetManager.getBufferedSprite("TileMap\\WallTop-15.png.png"));
-        tileMap.addTile("WallTop-19", AssetManager.getBufferedSprite("TileMap\\WallTop-19.png.png"));
-        tileMap.addTile("WallTop-20", AssetManager.getBufferedSprite("TileMap\\WallTop-20.png.png"));
-        tileMap.addTile("WallTop-21", AssetManager.getBufferedSprite("TileMap\\WallTop-21.png.png"));
-        tileMap.addTile("WallTop-22", AssetManager.getBufferedSprite("TileMap\\WallTop-22.png.png"));
+        tileMap.addTile("Pot-23", AssetManager.getBufferedSprite("TileMap\\Pot-23.png"));
+        tileMap.addTile("Wall-3", AssetManager.getBufferedSprite("TileMap\\Wall-3.png"));
+        tileMap.addTile("Wall-4", AssetManager.getBufferedSprite("TileMap\\Wall-4.png"));
+        tileMap.addTile("Wall-5", AssetManager.getBufferedSprite("TileMap\\Wall-5.png"));
+        tileMap.addTile("Wall-7", AssetManager.getBufferedSprite("TileMap\\Wall-7.png"));
+        tileMap.addTile("Wall-8", AssetManager.getBufferedSprite("TileMap\\Wall-8.png"));
+        tileMap.addTile("Wall-9", AssetManager.getBufferedSprite("TileMap\\Wall-9.png"));
+        tileMap.addTile("WallTop-13", AssetManager.getBufferedSprite("TileMap\\WallTop-13.png"));
+        tileMap.addTile("WallTop-14", AssetManager.getBufferedSprite("TileMap\\WallTop-14.png"));
+        tileMap.addTile("WallTop-15", AssetManager.getBufferedSprite("TileMap\\WallTop-15.png"));
+        tileMap.addTile("WallTop-19", AssetManager.getBufferedSprite("TileMap\\WallTop-19.png"));
+        tileMap.addTile("WallTop-20", AssetManager.getBufferedSprite("TileMap\\WallTop-20.png"));
+        tileMap.addTile("WallTop-21", AssetManager.getBufferedSprite("TileMap\\WallTop-21.png"));
+        tileMap.addTile("WallTop-22", AssetManager.getBufferedSprite("TileMap\\WallTop-22.png"));
 
         tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap\\Table"));
 
@@ -99,13 +98,11 @@ public class Game extends JFrame {
         AreaTrigger areaTrigger1 = new AreaTrigger(0, 0, 50, 50);
         camera2D.add(areaTrigger1);
 
-        root.addChild(camera2D);
 
         World world = new World(tileMap);
         world.addChildExcludeRender(player);
         world.addChildExcludeRender(areaTrigger1);
 
-        root.addChildExcludeRender(world);
 
         tileLayoutRenderer.addTileSprite(new TileLayoutSprite(0,0,new TileLayout(new String[][]{{"Wall-3"}})));
 
@@ -115,51 +112,30 @@ public class Game extends JFrame {
 
         Inventory inventory = new Inventory();
         inventory.setBounds(0, 400, 500, 100);
-//        inventory.setBackground(Color.GRAY);
 
         InventoryItem inventoryItem = new InventoryItem(AssetManager.getBufferedSprite("TileMap\\Floor1.png"), AssetManager.getBufferedSprite("TileMap\\Floor1.png"), "FloorItem");
         inventory.addInventoryItem(inventoryItem);
 
-//        add(inventory);
-        root.add(inventory);
-        root.setComponentZOrder(inventory, 0);
-
-        TextDialogDisplay textDialogDisplay = new TextDialogDisplay();
-
-        root.add(textDialogDisplay);
-        root.setComponentZOrder(textDialogDisplay, 0);
-
-//        add(root);
+//        root.setLayout(null);
+//        root.addChild(camera2D);
+//        root.addChildExcludeRender(world);
+//        root.add(inventory);
+//        root.setComponentZOrder(inventory, 0);
+//        root.add(textDialogDisplay);
+//        root.setComponentZOrder(textDialogDisplay, 0);
 
 //        add(new MenuScreen());
 
-        add(new MinigameScreen());
 
-        addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
 
-            }
+//        root.add(new MinigameScreen());
 
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });
+        add(root);
     }
 
     public void initializeAssets() {
         AssetManager.loadFont("LibreBaskerville", new File(AssetManager.getResourceDirectory("Fonts\\LibreBaskerville-Regular.ttf")));
+//        AssetManager.loadFont("Pokemon", new File(AssetManager.getResourceDirectory("Fonts\\LibreBaskerville-Regular.ttf")));
     }
 
     public void initializePanels() {

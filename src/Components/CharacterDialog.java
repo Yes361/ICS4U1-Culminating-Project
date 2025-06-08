@@ -1,3 +1,5 @@
 package Components;
 
-public record CharacterDialog(String dialogText, String character) {}
+import java.io.Serializable;
+
+public record CharacterDialog(String dialogText, String character) implements Serializable {}

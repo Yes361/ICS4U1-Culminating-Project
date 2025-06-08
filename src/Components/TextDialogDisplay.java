@@ -1,7 +1,10 @@
 package Components;
 
+import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
-import Utility.Console;
+import Utility.EventEmitter;
+import Utility.EventListener;
+import Utility.FileUtilities;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -10,17 +13,14 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class TextDialogDisplay extends JPanel implements JGameObjectInterface, KeyListener {
     private TextTypewriterEngine textTypewriterEngine;
-    private ArrayList<CharacterDialog> characterDialogList = new ArrayList<>() {{
-        add(new CharacterDialog("Raiyan who am I", "someone.png"));
-        add(new CharacterDialog("Raiyan who am I 1", "someone.png"));
-        add(new CharacterDialog("Raiyan who am I 2", "someone.png"));
-    }};
+    private ArrayList<CharacterDialog> characterDialogList = new ArrayList<>();
     private int currentDialogIndex = 0;
-//    private
+    private EventEmitter eventEmitter = new EventEmitter();
 
     public TextDialogDisplay() {
         setBounds(0, 0, 480, 100);
@@ -54,6 +54,18 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
         textTypewriterEngine.playTypewriterEffect(label, "Who is the skibidi-est of them all", 500);
     }
 
+    public void loadScript(ArrayList<CharacterDialog> characterDialogs) {
+        characterDialogList = characterDialogs;
+    }
+
+    public void saveScriptToFile(File file) {
+        FileUtilities.saveToFile(characterDialogList, file);
+    }
+
+    public void loadScriptFromFile(File file) {
+        characterDialogList = (ArrayList<CharacterDialog>) FileUtilities.loadFromFile(file);
+    }
+
     public void update(float delta) {
         textTypewriterEngine.update(delta);
     }
@@ -68,8 +80,12 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
         if (textTypewriterEngine.isTextPlaying()) {
             textTypewriterEngine.skipTextAnimation();
         } else {
-            currentDialogIndex++;
-            Console.println(characterDialogList.get(currentDialogIndex).dialogText());
+            if (++currentDialogIndex >= characterDialogList.size()) {
+                eventEmitter.emit("onScriptFinish");
+            } else {
+                eventEmitter.emit("onNextDialogue");
+            }
+
             textTypewriterEngine.playTypewriterEffect((JLabel) getComponent(0), characterDialogList.get(currentDialogIndex).dialogText(), 2000);
         }
     }
@@ -77,5 +93,13 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    public void onNextDialogue(EventListener eventListener) {
+        eventEmitter.subscribe("onNextDialogue", eventListener);
+    }
+
+    public void onScriptFinish(EventListener eventListener) {
+        eventEmitter.subscribe("onScriptFinish", eventListener);
     }
 }
