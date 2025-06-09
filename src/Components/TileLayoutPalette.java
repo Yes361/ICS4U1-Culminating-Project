@@ -2,9 +2,11 @@ package Components;
 
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Utility.Console;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Arrays;
 
 public class TileLayoutPalette extends JGameObject implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
@@ -22,29 +24,18 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         currentTileIndex = 0;
         currentTileName = tileMap.getIdentifier(currentTileIndex);
 
-        TileLayout tileLayout1 = new TileLayout();
-        TileLayout tileLayout2 = new TileLayout();
-        TileLayout tileLayout3 = new TileLayout();
-
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
 
-        tileLayout1.setTileLayout(new String[tileWidth][tileHeight]);
-        tileLayout2.setTileLayout(new String[tileWidth][tileHeight]);
-        tileLayout3.setTileLayout(new String[tileWidth][tileHeight]);
-
-        tileLayoutRenderer.addTileLayout(tileLayout1);
-        tileLayoutRenderer.addTileLayout(tileLayout2);
-        tileLayoutRenderer.addTileLayout(tileLayout3);
-
         tileLayoutRenderer.setTileMap(tileMap);
+        tileLayoutRenderer.createLayoutFromFile(new File(AssetManager.getResourceDirectory("Layouts\\academy.txt")));
 
         addMouseListener(this);
         addMouseWheelListener(this);
         addMouseMotionListener(this);
         addKeyListener(this);
 
-        add(tileLayoutRenderer);
+        tileLayoutRenderer.repaint();
     }
 
     private void placeTile(int x, int y) {
@@ -52,6 +43,10 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
         tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
         tileLayoutRenderer.repaint();
+    }
+
+    public TileLayoutRenderer getTileLayoutRenderer() {
+        return tileLayoutRenderer;
     }
 
     @Override
@@ -109,10 +104,18 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        tileLayoutRenderer.paintComponent(g);
+
         if (mousePosition != null) {
             Image img = tileMap.getTile(currentTileName).getScaledInstance(32, 32, Image.SCALE_SMOOTH);
             g.drawImage(img, mousePosition.x - img.getWidth(this) / 2, mousePosition.y - img.getHeight(this) / 2, this);
+
+            Font font = g.getFont();
+            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.drawString(String.format("%d %d", mousePosition.x, mousePosition.y), mousePosition.x, mousePosition.y);
+            g.setFont(font);
         }
+
     }
 
     @Override

@@ -1,5 +1,7 @@
 package Components;
 
+import Utility.Console;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,7 +38,30 @@ public class TileMap {
 
         assert directoryFiles != null;
         for (File file : directoryFiles) {
-            addTile(file.getName(), file.getAbsolutePath());
+            if (!file.isDirectory()) {
+                addTile(file.getName(), file.getAbsolutePath());
+            }
+        }
+    }
+
+    public void recursiveAddFromDirectory(String filePath) {
+        File directory = new File(filePath);
+        FilenameFilter fileNameExtensionFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+
+        File[] directoryFiles = directory.listFiles(fileNameExtensionFilter);
+
+        assert directoryFiles != null;
+        for (File file : directoryFiles) {
+            if (!file.isDirectory()) {
+                addTile(file.getName(), file.getAbsolutePath());
+            } else {
+                recursiveAddFromDirectory(file.getAbsolutePath());
+            }
         }
     }
 

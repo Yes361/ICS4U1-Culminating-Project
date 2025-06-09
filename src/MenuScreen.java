@@ -1,5 +1,6 @@
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
+import Utility.GraphicUtilies;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -20,17 +21,32 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
     public void createMenuScreen() {
         BoxLayout layoutManagerMenu = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(layoutManagerMenu);
+        setBounds(0, 0, 500, 500);
 
-//        set
+        JPanel container = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                super.paintComponent(graphics);
+                Graphics2D graphics2D = (Graphics2D) graphics;
+//                graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
 
-        Container container = new Container();
+                GraphicUtilies.applyGradient(graphics, getBackground(), getWidth(), getHeight());
+            }
+        };
+
+        container.setPreferredSize(new Dimension(300, getHeight()));
+        container.setMaximumSize(new Dimension(300, getHeight()));
+        container.setAlignmentX(LEFT_ALIGNMENT);
+
         LayoutManager layoutManager = new BoxLayout(container, BoxLayout.PAGE_AXIS);
         container.setLayout(layoutManager);
 
-        setBounds(0, 0, 500, 500);
         setBackground(Color.WHITE);
 
 //        ButtonGroup menuButtonGroup = new ButtonGroup();
+        ImageIcon AlchemyImageIcon = new ImageIcon(AssetManager.getBufferedSprite("Icons\\Academy.png", 256,  256));
+        JLabel AlchemyIcon = new JLabel(AlchemyImageIcon);
+        container.add(AlchemyIcon);
 
         container.add(createMenuButton("New Game", new MouseListener() {
             @Override
@@ -41,7 +57,71 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
             @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
-                add(new WorldScreen());
+                Main.game.worldScreen.setVisible(true);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        }));
+        container.add(Box.createVerticalStrut(20));
+
+        container.add(createMenuButton("Editor", new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setVisible(false);
+                EditorScreen editorScreen = Main.game.getEditorScreen();
+                editorScreen.setVisible(true);
+                editorScreen.setFocusable(true);
+                editorScreen.requestFocus();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        }));
+        container.add(Box.createVerticalStrut(20));
+
+        container.add(createMenuButton("Minigames", new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setVisible(false);
+                MinigameScreen minigameScreen = Main.game.getMinigameScreen();
+                minigameScreen.setVisible(true);
+                minigameScreen.setFocusable(true);
+                minigameScreen.requestFocus();
             }
 
             @Override
@@ -66,11 +146,6 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
 
         container.add(createMenuButton("Settings", null));
         container.add(Box.createVerticalStrut(20));
-
-//        BufferedImage
-        ImageIcon AlchemyImageIcon = new ImageIcon(AssetManager.getBufferedSprite("Icons\\Academy.png", 256,  256));
-        JLabel AlchemyIcon = new JLabel(AlchemyImageIcon);
-        add(AlchemyIcon);
 
         add(container);
 

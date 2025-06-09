@@ -2,9 +2,11 @@ package Components;
 
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Utility.Console;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -14,6 +16,10 @@ public class TileLayoutRenderer extends JGameObject implements Serializable {
     private List<TileLayout> tileLayouts = new ArrayList<>();
     private TileMap tileMap = new TileMap();
     private List<TileLayoutSprite> tileLayoutSpriteList = new ArrayList<>();
+
+    public TileLayoutRenderer() {
+        setBackground(Color.BLACK);
+    }
 
     public void setTileMap(TileMap tileMap) {
         this.tileMap = tileMap;
@@ -61,14 +67,19 @@ public class TileLayoutRenderer extends JGameObject implements Serializable {
         }
     }
 
-    public void createLayoutFromFile(String filePath) {
-        createLayoutFromFile(new File(filePath));
+    public List<TileLayout> createLayoutFromFile(String filePath) {
+        return createLayoutFromFile(new File(filePath));
     }
 
-    public void createLayoutFromFile(File file) {
+    public List<TileLayout> createLayoutFromFile(File file) {
+        if (!file.exists()) {
+
+        }
+
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
                 setTileLayouts((List<TileLayout>) objectInputStream.readObject());
+                return tileLayouts;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -89,8 +100,15 @@ public class TileLayoutRenderer extends JGameObject implements Serializable {
 
                     int width = 32;
                     int height = 32;
-                    Image img = tileMap.getTile(tileRow.get(j)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                    graphics.drawImage(img, i * width, j * height, this);
+
+                    Image image = tileMap.getTile(tileRow.get(j));
+
+                    if (image == null) {
+                        continue;
+                    }
+
+                    Image scaledImg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    graphics.drawImage(scaledImg, i * width, j * height, this);
                 }
             }
         }

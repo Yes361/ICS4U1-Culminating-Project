@@ -12,9 +12,9 @@ import java.awt.*;
 public class TextTypewriterEngine implements JGameObjectInterface, TweenListener {
     private String currentText;
     private AnimationTween tween;
-    private JLabel label;
+    private JTextArea label;
 
-    public void playTypewriterEffect(JLabel label, String text, float duration) {
+    public void playTypewriterEffect(JTextArea label, String text, float duration) {
         currentText = text;
 
         tween = new AnimationTweenBuilder(AnimationTween.Tween.LINEAR, 0, text.length())

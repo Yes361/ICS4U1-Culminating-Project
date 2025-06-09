@@ -12,4 +12,14 @@ public class RandomUtilities {
     public static <T> T choice(T[] list) {
         return list[rand.nextInt(0, list.length)];
     }
+
+    public static <T> void sortListRandomly(T[] list) {
+        for (int i = list.length - 1; i > 0; i--)
+        {
+            int index = rand.nextInt(i + 1);
+            T a = list[index];
+            list[index] = list[i];
+            list[i] = a;
+        }
+    }
 }

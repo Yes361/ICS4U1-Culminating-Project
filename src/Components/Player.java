@@ -4,86 +4,101 @@ import Animation.*;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.AudioManager;
 import Core.GameSystem.JGameObject;
-import Core.Input.Input;
 import Utility.EventEmitter;
 import Utility.EventListener;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player extends JGameObject implements CollisionListener {
     private EventEmitter eventEmitter = new EventEmitter();
+    private AnimationRenderer animationRenderer;
 
-    private final Input input = new Input() {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            super.keyPressed(e);
+    private float x;
+    private float y;
+    private final float speed = 0.3f;
 
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_DOWN, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT:
-//                    AudioManager.play(AssetManager.getAudioResourcePath("Dress Shoe Walking Down Stairs Sound Effect.wav"));
-                break;
-                default:
-                break;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            super.keyReleased(e);
-
-//            AudioManager.stop();
-        }
-    };
-
-    AnimationRenderer animationRenderer;
-
-    float x;
-    float y;
+    private final Set<Integer> keysPressed = new HashSet<>();
 
     public Player() {
-        addKeyListener(input);
+        setFocusable(true);
         setSize(100, 100);
         setLocation(0, 0);
-
         x = getX();
         y = getY();
 
-        AnimationSprite UpAnimation = new AnimationSprite(
-            100,
-            AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png"),
-            AssetManager.getSpriteResourcePath("Jasper\\Jasper-2.png.png"),
-            AssetManager.getSpriteResourcePath("Jasper\\Jasper-3.png.png"),
-            AssetManager.getSpriteResourcePath("Jasper\\Jasper-4.png.png")
+        setupAnimations();
+        setupKeyBindings();
+    }
+
+    private void setupKeyBindings() {
+        int condition = WHEN_IN_FOCUSED_WINDOW;
+        InputMap inputMap = getInputMap(condition);
+        ActionMap actionMap = getActionMap();
+
+        bindKey(inputMap, actionMap, "UP", KeyEvent.VK_UP, true);
+        bindKey(inputMap, actionMap, "UP_RELEASED", KeyEvent.VK_UP, false);
+        bindKey(inputMap, actionMap, "DOWN", KeyEvent.VK_DOWN, true);
+        bindKey(inputMap, actionMap, "DOWN_RELEASED", KeyEvent.VK_DOWN, false);
+        bindKey(inputMap, actionMap, "LEFT", KeyEvent.VK_LEFT, true);
+        bindKey(inputMap, actionMap, "LEFT_RELEASED", KeyEvent.VK_LEFT, false);
+        bindKey(inputMap, actionMap, "RIGHT", KeyEvent.VK_RIGHT, true);
+        bindKey(inputMap, actionMap, "RIGHT_RELEASED", KeyEvent.VK_RIGHT, false);
+    }
+
+    private void bindKey(InputMap inputMap, ActionMap actionMap, String name, int keyCode, boolean pressed) {
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, 0, !pressed);
+        inputMap.put(keyStroke, name);
+
+        actionMap.put(name, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (pressed) {
+                    keysPressed.add(keyCode);
+                    // Uncomment if you want a walking sound effect
+                    // AudioManager.play(...);
+                } else {
+                    keysPressed.remove(keyCode);
+                }
+            }
+        });
+    }
+
+    private void setupAnimations() {
+        AnimationSprite UpAnimation = new AnimationSprite(80,
+                AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\Jasper-2.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\Jasper-3.png.png"),
+                AssetManager.getSpriteResourcePath("Jasper\\Jasper-4.png.png")
         );
 
-        AnimationSprite LeftAnimation = new AnimationSprite(
-                100,
+        AnimationSprite LeftAnimation = new AnimationSprite(80,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-4.png.png")
         );
 
-        AnimationSprite RightAnimation = new AnimationSprite(
-                100,
+        AnimationSprite RightAnimation = new AnimationSprite(80,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-4.png.png")
         );
 
-        AnimationSprite DownAnimation = new AnimationSprite(
-                100,
+        AnimationSprite DownAnimation = new AnimationSprite(80,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-4.png.png")
         );
 
-        AnimationSprite IdleAnimation = new AnimationSprite(
-                100,
+        AnimationSprite IdleAnimation = new AnimationSprite(80,
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png")
         );
 
@@ -96,58 +111,52 @@ public class Player extends JGameObject implements CollisionListener {
 
         animationRenderer = new AnimationRenderer(this, sprites);
         animationRenderer.setCurrentAnimation("idle");
-
-        repaint();
     }
 
     public void onMove(EventListener eventListener) {
         eventEmitter.subscribe("onMove", eventListener);
     }
 
-
     public void update(float delta) {
-        float speed = 0.5f;
+        boolean moved = false;
 
-        if (input.isKeyPressed(KeyEvent.VK_UP)) {
+        if (keysPressed.contains(KeyEvent.VK_UP)) {
             y -= speed * delta;
             animationRenderer.setCurrentAnimation("down");
-            eventEmitter.emit("onMove", x, y);
-        } else if (input.isKeyPressed(KeyEvent.VK_DOWN)) {
+            moved = true;
+        } else if (keysPressed.contains(KeyEvent.VK_DOWN)) {
             y += speed * delta;
             animationRenderer.setCurrentAnimation("up");
-            eventEmitter.emit("onMove", x, y);
-        } else if (input.isKeyPressed(KeyEvent.VK_LEFT)) {
+            moved = true;
+        } else if (keysPressed.contains(KeyEvent.VK_LEFT)) {
             x -= speed * delta;
             animationRenderer.setCurrentAnimation("left");
-            eventEmitter.emit("onMove", x, y);
-        } else if (input.isKeyPressed(KeyEvent.VK_RIGHT)) {
+            moved = true;
+        } else if (keysPressed.contains(KeyEvent.VK_RIGHT)) {
             x += speed * delta;
             animationRenderer.setCurrentAnimation("right");
+            moved = true;
+        }
+
+        if (moved) {
             eventEmitter.emit("onMove", x, y);
         } else {
-//            animationRenderer.setCurrentAnimation("idle");
             animationRenderer.skipToFirstFrame();
         }
 
         setLocation((int) x, (int) y);
-
         animationRenderer.update(delta);
     }
-
-
 
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-
         Graphics2D graphics2D = (Graphics2D) graphics;
         animationRenderer.render(graphics2D, getWidth(), getHeight());
     }
 
     @Override
-    public void onCollision(Object other) {
-
-    }
+    public void onCollision(Object other) {}
 
     @Override
     public Rectangle2D getBoundRect() {

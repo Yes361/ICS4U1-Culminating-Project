@@ -2,21 +2,10 @@ package Components;
 
 import Core.GameSystem.JGameObject;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
-public class World extends JGameObject  {
-    private TileMap tileMap;
-
-    public World(TileMap tileMap) {
-        this.tileMap = tileMap;
-
-        tileMap = new TileMap();
-    }
-
+public class CollisionEngine extends JGameObject  {
     public void update(float delta) {
         computeCollisions(delta);
     }

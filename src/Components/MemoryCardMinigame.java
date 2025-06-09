@@ -28,14 +28,15 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
 
     public MemoryCardMinigame() {
         setBounds(0, 0,500,500);
-        setLayout(null);
+        setBackground(new Color(75, 47, 31));
 
         createMemoryCards();
     }
 
     public void createMemoryCards() {
+
         panel = new JPanel();
-        panel.setBounds(0, 0, 500, 500);
+        panel.setBounds(100, 100, 300, 300);
 
         int cardDeckWidth = 4;
         int cardDeckHeight = 5;

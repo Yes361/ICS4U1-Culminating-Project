@@ -6,6 +6,8 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class GraphicUtilies {
+//    private static final
+
     public static boolean containsPoint(Point point, Point topleft, int width, int height) {
         return point.x > topleft.x && point.x < topleft.x + width && point.y > topleft.y && point.y < topleft.y + height;
     }
@@ -51,5 +53,22 @@ public class GraphicUtilies {
         graphics2D.setTransform(affineTransform);
 
         return graphics2D;
+    }
+
+    public static void applyGradient(Graphics graphics, Color color, int width, int height) {
+        Graphics2D graphics2D = (Graphics2D) graphics;
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        GradientPaint gp = new GradientPaint(width, 0,
+                color.brighter().brighter(), 0, 0,
+                color.darker().darker());
+
+        graphics2D.setPaint(gp);
+        graphics2D.fillRect(0, 0, width, height);
+    }
+
+    public static void applyLinearGradient() {
+
     }
 }
