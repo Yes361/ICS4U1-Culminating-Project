@@ -2,6 +2,7 @@ package Utility;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
@@ -68,7 +69,25 @@ public class GraphicUtilies {
         graphics2D.fillRect(0, 0, width, height);
     }
 
-    public static void applyLinearGradient() {
+    public static void applyLinearGraient(Graphics graphics, Color baseColor, int width, int height) {
+        Graphics2D g2d = (Graphics2D) graphics;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        float[] fractions = {0.0f, 1.0f};
+        Color transparent = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 0);
+        Color[] colors = {
+            baseColor.brighter().brighter(),
+            transparent
+        };
+
+        LinearGradientPaint paint = new LinearGradientPaint(
+            new Point2D.Float(0, 0),
+            new Point2D.Float(width, 0),
+            fractions,
+            colors
+        );
+
+        g2d.setPaint(paint);
+        g2d.fillRect(0, 0, width, height);
     }
 }

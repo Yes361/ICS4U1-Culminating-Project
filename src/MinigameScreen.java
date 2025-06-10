@@ -9,7 +9,7 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
     JGameObject root;
 
     public MinigameScreen() {
-        setBounds(0, 0, 500, 500);
+        setBounds(0, 0, 900, 600);
         setVisible(true);
         setLayout(null);
 

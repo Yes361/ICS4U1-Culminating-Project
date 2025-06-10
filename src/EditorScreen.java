@@ -22,7 +22,7 @@ public class EditorScreen extends JGameObject {
     boolean down = false;
 
     public EditorScreen() {
-        setBounds(0, 0, 500, 500);
+        setBounds(0, 0, 900, 600);
 
         tileMap.recursiveAddFromDirectory(AssetManager.getSpriteResourcePath("TileMap"));
 

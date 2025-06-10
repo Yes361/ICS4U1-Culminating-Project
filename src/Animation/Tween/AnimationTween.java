@@ -65,53 +65,54 @@ public class AnimationTween {
     }
 
     public void update(float delta) {
-        if (animationIteration > 0 && !loop) {
-            return;
-        }
+        if (!isPlaying) return;
 
-        if (currentIteration > animationIteration) {
-            return;
-        }
-
+        // Update progress
         switch (type) {
             case LINEAR:
                 value = animationElapsed / animationDuration;
                 break;
             case CUBIC:
+                // TODO
                 break;
             case DISCRETE:
+                // TODO
                 break;
         }
 
-        if (currentDirection) {
-            animationElapsed += delta;
-        } else {
-            animationElapsed -= delta;
-        }
-
+        // Advance time
+        animationElapsed += currentDirection ? delta : -delta;
         timeElapsed += delta;
-        isPlaying = !(value > 1 || value < 0);
 
-        if (value > 1 || value < 0) {
-            if (animationDirection == AnimationProperties.REVERSED_DIRECTION) {
-                currentDirection = !currentDirection;
-                if (currentDirection) {
-                    animationElapsed = 0;
-                } else {
-                    animationElapsed = animationDuration;
-                }
-            } else {
-                animationElapsed = 0;
-            }
+        // Check bounds and handle iteration/loop logic
+        boolean outOfBounds = (currentDirection && animationElapsed >= animationDuration) ||
+                (!currentDirection && animationElapsed <= 0);
 
-            value = MathUtilities.constrain(0, 1, value);
-
+        if (outOfBounds) {
             currentIteration++;
 
-            if (callback != null) {
-                callback.onIteration(currentIteration);
+            if (!loop && animationIteration > 0 && currentIteration >= animationIteration) {
+                isPlaying = false;
+                animationElapsed = currentDirection ? animationDuration : 0;
+                value = currentDirection ? 1 : 0;
+                if (callback != null) callback.onUpdate(getLerpValue());
+                if (callback != null) callback.onIteration(currentIteration);
+                return;
             }
+
+            if (animationDirection == AnimationProperties.REVERSED_DIRECTION) {
+                currentDirection = !currentDirection;
+            }
+
+            animationElapsed = currentDirection ? 0 : animationDuration;
+            value = currentDirection ? 0 : 1;
+
+            if (callback != null) callback.onIteration(currentIteration);
         }
+
+        // Clamp and update
+        animationElapsed = Math.max(0, Math.min(animationElapsed, animationDuration));
+        value = animationElapsed / animationDuration;
 
         if (callback != null) {
             callback.onUpdate(getLerpValue());

@@ -1,5 +1,6 @@
 package Components;
 
+import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
 import Core.GameSystem.JLabelExtended;
 import Utility.Console;
@@ -27,7 +28,7 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
     private float clickDelay = 1000;
 
     public MemoryCardMinigame() {
-        setBounds(0, 0,500,500);
+        setBounds(0, 0,900, 600);
         setBackground(new Color(75, 47, 31));
 
         createMemoryCards();

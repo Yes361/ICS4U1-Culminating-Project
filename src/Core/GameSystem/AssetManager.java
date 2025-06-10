@@ -47,6 +47,15 @@ public class AssetManager {
         return getBufferedSprite(filePath).getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
 
+    public static Image getBufferedSpriteAbs(String absFilePath, int width, int height) {
+        try {
+            return ImageIO.read(new File(absFilePath)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public static Image getBufferedSpriteAspectRatioLocked(String filePath) {
         return getBufferedSprite(filePath).getScaledInstance(0, 0, Image.SCALE_SMOOTH);
     }
@@ -110,6 +119,14 @@ public class AssetManager {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static Font loadFontFromDirectory(String filePath) {
+        try {
+            return Font.createFont(Font.TRUETYPE_FONT, new File(AssetManager.getResourceDirectory(filePath)));
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Font getFont(String identifier) {

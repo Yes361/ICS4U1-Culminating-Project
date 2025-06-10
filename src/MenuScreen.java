@@ -1,89 +1,124 @@
+import Animation.Tween.AnimationTween;
+import Animation.Tween.AnimationTweenBuilder;
+import Animation.Tween.TweenListener;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
+import Utility.Console;
 import Utility.GraphicUtilies;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MenuScreen extends JPanel implements JGameObjectInterface {
+    private JPanel container;
+    private AnimationTween imgXProgress;
+    private AnimationTween backgroundFade;
+
+    private List<AnimationTween> buttonAnimations = new ArrayList<>();
+    private List<JButton> buttons = new ArrayList<>();
+
+    private int currentBackgroundImage = 0;
+    private String[] backgroundImagePaths;
+
+    Font font;
+
     public MenuScreen() {
+        backgroundImagePaths = new File(AssetManager.getSpriteResourcePath("Icons\\SucroseTitleCard")).list();
+
         createMenuScreen();
     }
 
     public void createMenuScreen() {
-        BoxLayout layoutManagerMenu = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-        setLayout(layoutManagerMenu);
-        setBounds(0, 0, 500, 500);
+        // Use vertical BoxLayout and center container using glue
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setBounds(0, 0, 900, 600);
+        setBackground(Color.BLACK);
 
-        JPanel container = new JPanel() {
+        font = AssetManager.loadFontFromDirectory("Fonts\\Mostical-Demo.ttf");
+
+        container = new JPanel() {
             @Override
             protected void paintComponent(Graphics graphics) {
                 super.paintComponent(graphics);
-                Graphics2D graphics2D = (Graphics2D) graphics;
-//                graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
-
-                GraphicUtilies.applyGradient(graphics, getBackground(), getWidth(), getHeight());
+                GraphicUtilies.applyLinearGraient(graphics, Color.BLACK, getWidth(), getHeight());
             }
         };
 
+        container.setOpaque(false);
         container.setPreferredSize(new Dimension(300, getHeight()));
         container.setMaximumSize(new Dimension(300, getHeight()));
-        container.setAlignmentX(LEFT_ALIGNMENT);
+        container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+        container.setAlignmentX(Component.LEFT_ALIGNMENT); // Center container in parent
 
-        LayoutManager layoutManager = new BoxLayout(container, BoxLayout.PAGE_AXIS);
-        container.setLayout(layoutManager);
-
-        setBackground(Color.WHITE);
-
-//        ButtonGroup menuButtonGroup = new ButtonGroup();
-        ImageIcon AlchemyImageIcon = new ImageIcon(AssetManager.getBufferedSprite("Icons\\Academy.png", 256,  256));
+        // Add centered icon
+        BufferedImage AlchemyBufferedImage = AssetManager.getBufferedSprite("Icons\\AlchemyAcademy.png");
+        float aspectRatio = (float) AlchemyBufferedImage.getHeight() / AlchemyBufferedImage.getWidth();
+        int AlchemyAcademyLogoWidth = 280;
+        ImageIcon AlchemyImageIcon = new ImageIcon(AlchemyBufferedImage.getScaledInstance(AlchemyAcademyLogoWidth, (int) (aspectRatio * AlchemyAcademyLogoWidth), Image.SCALE_SMOOTH));
         JLabel AlchemyIcon = new JLabel(AlchemyImageIcon);
+        AlchemyIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        container.add(Box.createVerticalStrut(20));
         container.add(AlchemyIcon);
+        container.add(Box.createVerticalStrut(20));
 
+        // Add buttons
+        createNewGameButton();
+        createEditorButton();
+        createMinigamesButton();
+
+        container.add(createMenuButton("Save Files", null));
+        container.add(Box.createVerticalStrut(20));
+        container.add(createMenuButton("Settings", null));
+        container.add(Box.createVerticalStrut(20));
+
+        // Center container vertically in MenuScreen
+        add(Box.createVerticalGlue());
+        add(container);
+        add(Box.createVerticalGlue());
+
+        imgXProgress = new AnimationTweenBuilder(AnimationTween.Tween.LINEAR, 0, 50)
+                .setLoop(true)
+                .setDuration(5000)
+                .setDirection(AnimationTween.AnimationProperties.REVERSED_DIRECTION)
+                .setCallback(new TweenListener() {
+                    @Override
+                    public void onUpdate(float value) {}
+
+                    @Override
+                    public void onIteration(int iteration) {
+                        currentBackgroundImage++;
+                    }
+                })
+                .build();
+    }
+
+    private void createNewGameButton() {
         container.add(createMenuButton("New Game", new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
                 Main.game.worldScreen.setVisible(true);
             }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+            public void mouseClicked(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
         }));
         container.add(Box.createVerticalStrut(20));
+    }
 
+    private void createEditorButton() {
         container.add(createMenuButton("Editor", new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
                 EditorScreen editorScreen = Main.game.getEditorScreen();
@@ -92,30 +127,16 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
                 editorScreen.requestFocus();
             }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+            public void mouseClicked(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
         }));
         container.add(Box.createVerticalStrut(20));
+    }
 
+    private void createMinigamesButton() {
         container.add(createMenuButton("Minigames", new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
                 MinigameScreen minigameScreen = Main.game.getMinigameScreen();
@@ -124,75 +145,62 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
                 minigameScreen.requestFocus();
             }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+            public void mouseClicked(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
         }));
         container.add(Box.createVerticalStrut(20));
-
-        container.add(createMenuButton("Save Files", null));
-        container.add(Box.createVerticalStrut(20));
-
-        container.add(createMenuButton("Settings", null));
-        container.add(Box.createVerticalStrut(20));
-
-        add(container);
-
-//        ImageIcon academiaBackgroundIcon = new ImageIcon(AssetManager.getBufferedSprite("Icons\\academia-background.png", 256,  256));
-//        JLabel academiaBackground = new JLabel(academiaBackgroundIcon);
-//        academiaBackground.setBounds(0, 0, getWidth(), getHeight());
-//
-//        add(academiaBackground);
-//        setComponentZOrder(academiaBackground, 0);
     }
 
     public JButton createMenuButton(String label, MouseListener buttonMouseListener) {
         JButton button = new JButton(label);
-        button.setBackground(Color.white);
-        button.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), new EmptyBorder(10,10,10,10)));
-//        button.setBorder(new CompoundBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED), new EmptyBorder(10,10,10,10)));
-//        button.setMargin(new Insets(1, 1, 1, 1));
-//        button.set
-//        button.setFont(new Font("Arial", ))
+        button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
 
-//      TODO: Add in the rest
+        button.setBackground(Color.WHITE);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+
+        button.setBorderPainted(false);
+        button.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
+
+        float baselineFontSize = 20f;
+        int idx = buttons.size();
+
+        button.setFont(font.deriveFont(baselineFontSize));
+        button.setForeground(Color.WHITE);
         button.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                buttonMouseListener.mouseClicked(e);
-            }
-
-            @Override
             public void mousePressed(MouseEvent e) {
-                buttonMouseListener.mousePressed(e);
+                if (buttonMouseListener != null) {
+                    buttonMouseListener.mousePressed(e);
+                }
             }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
+            public void mouseClicked(MouseEvent e) {
+                if (buttonMouseListener != null) {
+                    buttonMouseListener.mouseClicked(e);
+                }
             }
 
-            @Override
+            public void mouseReleased(MouseEvent e) {}
+
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(Color.green);
+
+                button.setFont(font.deriveFont(28f));
+//                buttonAnimations.set(idx, new AnimationTweenBuilder(AnimationTween.Tween.LINEAR, baselineFontSize, 24f).setLoop(false).build());
             }
 
-            @Override
             public void mouseExited(MouseEvent e) {
                 button.setBackground(Color.white);
+
+                button.setFont(font.deriveFont(baselineFontSize));
+                buttonAnimations.set(idx, null);
             }
         });
+
+        buttons.add(button);
+        buttonAnimations.add(null);
 
         return button;
     }
@@ -201,11 +209,37 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.drawImage(AssetManager.getBufferedSprite("Icons\\academia-background.png", getWidth(),  getHeight()), 0, 0, this);
+        if (backgroundFade != null) {
+            Graphics2D graphics2D = (Graphics2D) g;
+            graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, backgroundFade.getLerpValue()));
+        }
+
+        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\SucroseTitleCard\\%s", backgroundImagePaths[currentBackgroundImage]), getWidth(), getHeight()),
+                (int) imgXProgress.getLerpValue(), 0, this);
+
+        for (int i = 0;i < buttonAnimations.size();i++) {
+            if (buttonAnimations.get(i) != null) {
+                buttons.get(i).setFont(font.deriveFont(buttonAnimations.get(i).getLerpValue()));
+            }
+        }
     }
 
     @Override
     public void update(float delta) {
+        if (imgXProgress != null) {
+            imgXProgress.update(delta);
+        }
 
+        if (backgroundFade != null) {
+            backgroundFade.update(delta);
+        }
+
+        for (int i = 0;i < buttonAnimations.size();i++) {
+            if (buttonAnimations.get(i) != null) {
+                buttonAnimations.get(i).update(delta);
+            }
+        }
+
+        repaint();
     }
 }

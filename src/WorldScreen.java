@@ -21,7 +21,7 @@ public class WorldScreen extends JGameObject {
 
     public void initScreen() {
 //        setBounds(0, 0, getParent().getWidth(), getParent().getHeight());
-        setBounds(0, 0, 500, 500);
+        setBounds(0, 0, 900, 600);
         setBackground(Color.BLACK);
 
         tileMap.addTilesFromDirectory(AssetManager.getSpriteResourcePath("TileMap"));

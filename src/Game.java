@@ -18,8 +18,7 @@ public class Game extends JFrame implements ComponentListener {
     MinigameScreen minigameScreen;
 
     public Game() {
-//        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setBounds(0, 0, 500, 500);
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         root = new JGameObject();
@@ -43,6 +42,9 @@ public class Game extends JFrame implements ComponentListener {
         root.add(minigameScreen);
 
         add(root);
+        setVisible(true);
+
+        addComponentListener(this);
     }
 
     public MinigameScreen getMinigameScreen() {
@@ -77,10 +79,7 @@ public class Game extends JFrame implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        int W = 4;
-        int H = 3;
-        Rectangle b = e.getComponent().getBounds();
-        e.getComponent().setBounds(b.x, b.y, b.width, b.width*H/W);
+        Console.println(e.getComponent().getSize());
     }
 
     @Override
