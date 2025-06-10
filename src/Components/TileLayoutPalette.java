@@ -2,8 +2,10 @@ package Components;
 
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Core.Input.Input;
 import Utility.Console;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -18,6 +20,7 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
     private TileLayoutRenderer tileLayoutRenderer = new TileLayoutRenderer();
     private Point mousePosition;
     private int currentLayer = 0;
+    private File file;
 
     public TileLayoutPalette(TileMap tileMap, int tileWidth, int tileHeight) {
         this.tileMap = tileMap;
@@ -28,7 +31,9 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         this.tileHeight = tileHeight;
 
         tileLayoutRenderer.setTileMap(tileMap);
-        tileLayoutRenderer.createLayoutFromFile(new File(AssetManager.getResourceDirectory("Layouts\\academy.txt")));
+
+        file = new File(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+        tileLayoutRenderer.createLayoutFromFile(file);
 
         addMouseListener(this);
         addMouseWheelListener(this);
@@ -36,6 +41,23 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         addKeyListener(this);
 
         tileLayoutRenderer.repaint();
+
+
+        InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+//        get(inputMap)
+
+
+//        if (e.getKeyCode() == KeyEvent.VK_W) {
+//            currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
+//        } else if (e.getKeyCode() == KeyEvent.VK_P) {
+//            tileLayoutRenderer.saveLayouts(file);
+//        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+//            tileLayoutRenderer.createLayoutFromFile(file);
+//        }
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     private void placeTile(int x, int y) {
@@ -128,9 +150,9 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         if (e.getKeyCode() == KeyEvent.VK_W) {
             currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
-            tileLayoutRenderer.saveLayouts(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+            tileLayoutRenderer.saveLayouts(file);
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+            tileLayoutRenderer.createLayoutFromFile(file);
         }
     }
 

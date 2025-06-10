@@ -29,20 +29,26 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
 
     public MemoryCardMinigame() {
         setBounds(0, 0,900, 600);
+        setOpaque(true);
         setBackground(new Color(75, 47, 31));
 
         createMemoryCards();
+
+        repaint();
     }
 
     public void createMemoryCards() {
-
         panel = new JPanel();
-        panel.setBounds(100, 100, 300, 300);
+        panel.setBounds(100, 100, 700, 400);
 
         int cardDeckWidth = 4;
         int cardDeckHeight = 5;
 
-        panel.setLayout(new GridLayout(cardDeckWidth, cardDeckHeight));
+        GridLayout gridLayout = new GridLayout(cardDeckWidth, cardDeckHeight);
+        gridLayout.setHgap(5);
+        gridLayout.setVgap(5);
+
+        panel.setLayout(gridLayout);
         String[] cardItems = {
             "Isomer",
             "Catalyst",
@@ -168,18 +174,15 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
 
             clicked = false;
         }
-
-        for (Component component : panel.getComponents()) {
-            if (component instanceof JLabelExtended labelExtended) {
-
-            }
-        }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        for (int i = 0;i < 4;i++) {
+            g.drawLine(0, i * getHeight() / 4, getWidth(), i * getHeight() / 4);
+        }
     }
 
     @Override

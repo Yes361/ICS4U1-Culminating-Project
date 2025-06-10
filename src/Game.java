@@ -16,12 +16,15 @@ public class Game extends JFrame implements ComponentListener {
     EditorScreen editorScreen;
     MenuScreen menuScreen;
     MinigameScreen minigameScreen;
+    SettingScreen settingScreen;
 
     public Game() {
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         root = new JGameObject();
+        root.setOpaque(true);
+        root.setLayout(null);
         root.setBounds(0, 0, getWidth(), getHeight());
 
         worldScreen = new WorldScreen();
@@ -40,6 +43,10 @@ public class Game extends JFrame implements ComponentListener {
         minigameScreen = new MinigameScreen();
         minigameScreen.setVisible(false);
         root.add(minigameScreen);
+
+        settingScreen = new SettingScreen();
+        settingScreen.setVisible(false);
+        root.add(settingScreen);
 
         add(root);
         setVisible(true);

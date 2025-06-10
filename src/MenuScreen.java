@@ -32,7 +32,9 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
     Font font;
 
     public MenuScreen() {
-        backgroundImagePaths = new File(AssetManager.getSpriteResourcePath("Icons\\SucroseTitleCard")).list();
+//        backgroundImagePaths = new File(AssetManager.getSpriteResourcePath("Icons\\SucroseTitleCard")).list();
+        backgroundImagePaths = new String[]{ AssetManager.getSpriteResourcePath("Icons\\academia-background.png") };
+
 
         createMenuScreen();
     }
@@ -41,6 +43,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
         // Use vertical BoxLayout and center container using glue
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBounds(0, 0, 900, 600);
+        setOpaque(true);
         setBackground(Color.BLACK);
 
         font = AssetManager.loadFontFromDirectory("Fonts\\Mostical-Demo.ttf");
@@ -96,7 +99,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
 
                     @Override
                     public void onIteration(int iteration) {
-                        currentBackgroundImage++;
+                        currentBackgroundImage = (currentBackgroundImage + 1) % backgroundImagePaths.length;
                     }
                 })
                 .build();
@@ -214,7 +217,9 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
             graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, backgroundFade.getLerpValue()));
         }
 
-        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\SucroseTitleCard\\%s", backgroundImagePaths[currentBackgroundImage]), getWidth(), getHeight()),
+//        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\SucroseTitleCard\\%s", backgroundImagePaths[currentBackgroundImage]), getWidth(), getHeight()),
+//                (int) imgXProgress.getLerpValue(), 0, this);
+        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\%s", "academia-background.png"), getWidth(), getHeight()),
                 (int) imgXProgress.getLerpValue(), 0, this);
 
         for (int i = 0;i < buttonAnimations.size();i++) {

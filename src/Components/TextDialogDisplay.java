@@ -28,7 +28,7 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
     private JTextArea label;
 
     public TextDialogDisplay() {
-        setBounds(0, 0, 480, 100);
+        setBounds(0, 0, 900, 100);
 
         setFocusable(true);
         grabFocus();

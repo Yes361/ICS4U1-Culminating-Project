@@ -50,6 +50,8 @@ public class JGameObject extends JComponent {
         gameObject.setParentNode(this);
 
         super.add(gameObject);
+        revalidate();
+        repaint();
     }
 
     public <T> List<T> getComponentChildren(Class<T> classType) {
@@ -103,7 +105,12 @@ public class JGameObject extends JComponent {
         super.remove(gameObject);
     }
 
-//    public GameObject findNode() {
-//        return null;
-//    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (isOpaque()) {
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
 }

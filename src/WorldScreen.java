@@ -99,8 +99,8 @@ public class WorldScreen extends JGameObject {
         areaTriggerHall.setVisible(false);
 
         CollisionEngine collisionEngine = new CollisionEngine();
-        collisionEngine.addChildExcludeRender(areaTrigger);
-        collisionEngine.addChildExcludeRender(areaTriggerHall);
+//        collisionEngine.addChildExcludeRender(areaTrigger);
+//        collisionEngine.addChildExcludeRender(areaTriggerHall);
         collisionEngine.addChildExcludeRender(player);
 
         World = new JGameObject();

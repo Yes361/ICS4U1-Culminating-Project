@@ -8,8 +8,11 @@ import Utility.Console;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class EditorScreen extends JGameObject {
     private TileLayoutPalette tileLayoutPalette;
@@ -20,6 +23,9 @@ public class EditorScreen extends JGameObject {
     boolean right = false;
     boolean up = false;
     boolean down = false;
+
+    JFrame frame;
+    JFileChooser fileChooser = new JFileChooser();
 
     public EditorScreen() {
         setBounds(0, 0, 900, 600);
@@ -104,6 +110,34 @@ public class EditorScreen extends JGameObject {
 
         addChild(tileLayoutPalette);
 
+        frame = new JFrame();
+        frame.setBounds(0, 0, 500, 500);
+
+        JButton OpenFileLevel = new JButton("Open Level");
+        OpenFileLevel.setBounds(500, 300, 100, 30);
+
+        OpenFileLevel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileChooser.setCurrentDirectory(new File(AssetManager.getResourceDirectory("Layouts")));
+                int FileChooserReturn = fileChooser.showOpenDialog(frame);
+
+                switch (FileChooserReturn) {
+                    case JFileChooser.APPROVE_OPTION -> {
+                        File file = fileChooser.getSelectedFile();
+                        tileLayoutPalette.setFile(file);
+                        tileLayoutPalette.getTileLayoutRenderer().createLayoutFromFile(file);
+                        requestFocus();
+                    }
+                    case JFileChooser.CANCEL_OPTION -> {
+
+                    }
+                }
+            }
+        });
+
+        add(OpenFileLevel);
+        setComponentZOrder(OpenFileLevel, 0);
     }
 
     @Override
