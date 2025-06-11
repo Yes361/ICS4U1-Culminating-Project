@@ -1,6 +1,8 @@
+import Utility.Console;
 import Utility.WordList;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -16,6 +18,8 @@ public class HangManMinigame extends JPanel implements KeyListener {
 
         currentLabel = new JLabel();
         currentLabel.setText(new StringBuilder().repeat("_", currentWord.length()).toString());
+        currentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        currentLabel.setBounds(450, 300, 100, 30);
 
         add(currentLabel);
 
@@ -31,13 +35,15 @@ public class HangManMinigame extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        Console.println(currentWord);
+
         String skib = String.valueOf(e.getKeyChar());
         StringBuilder currentText = new StringBuilder(currentLabel.getText());
 
         if (currentWord.contains(skib)) {
             for (int i = 0;i < currentWord.length();i++) {
                 if (currentWord.charAt(i) == e.getKeyChar()) {
-                    currentText.replace(i, i, skib);
+                    currentText.setCharAt(i, e.getKeyChar());
                 }
             }
         }

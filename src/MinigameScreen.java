@@ -9,6 +9,9 @@ import java.awt.*;
 public class MinigameScreen extends JPanel implements JGameObjectInterface {
     JGameObject root;
     MemoryCardMinigame memoryCardMinigame;
+    HangManMinigame hangManMinigame;
+    WordleMinigame wordleMinigame;
+    TicTacToeMinigame ticTacToeMinigame;
 
     public MinigameScreen() {
         setBounds(0, 0, 900, 600);
@@ -23,13 +26,48 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
 //        memoryCardMinigame = new MemoryCardMinigame();
 //        root.addChild(memoryCardMinigame);
 
-        HangManMinigame hangManMinigame = new HangManMinigame();
+        hangManMinigame = new HangManMinigame();
+        hangManMinigame.setFocusable(true);
+        hangManMinigame.setVisible(false);
         root.add(hangManMinigame);
+
+        ticTacToeMinigame = new TicTacToeMinigame();
+        ticTacToeMinigame.setFocusable(true);
+        ticTacToeMinigame.setVisible(true);
+        root.add(ticTacToeMinigame);
+
+        wordleMinigame = new WordleMinigame();
+        wordleMinigame.setFocusable(true);
+        wordleMinigame.setVisible(false);
+        root.add(wordleMinigame);
+
+
+        wordleMinigame = new WordleMinigame();
+        wordleMinigame.setFocusable(true);
+        wordleMinigame.setVisible(false);
+        root.add(wordleMinigame);
 
         root.setVisible(true);
         add(root);
 
         repaint();
+    }
+
+    public void SwitchGame() {
+
+    }
+
+
+    public TicTacToeMinigame getTicTacToeMinigame() {
+        return ticTacToeMinigame;
+    }
+
+    public HangManMinigame getHangManMinigame() {
+        return hangManMinigame;
+    }
+
+    public WordleMinigame getWordleMinigame() {
+        return wordleMinigame;
     }
 
     @Override

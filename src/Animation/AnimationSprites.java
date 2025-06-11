@@ -1,5 +1,6 @@
 package Animation;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class AnimationSprites {
@@ -11,6 +12,14 @@ public class AnimationSprites {
 
     public AnimationSprite getAnimationSprite(String identifier) {
         return animations.get(identifier);
+    }
+
+    public void addAnimationFromDirectory(String filename) {
+
+    }
+
+    public void addAnimationFromDirectory(File file) {
+
     }
 
     public HashMap<String, AnimationSprite> getAnimations() {
