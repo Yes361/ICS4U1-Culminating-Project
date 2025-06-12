@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public class HangManMinigame extends Minigame implements KeyListener, JGameObjectInterface {
@@ -30,8 +31,14 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
     public HangManMinigame() {
         setBounds(0, 0, 900, 600);
 
+        JPanel panel = new JPanel();
+        BoxLayout boxLayout = new BoxLayout(panel,BoxLayout.PAGE_AXIS);
+        panel.setLayout(boxLayout);
+
+        add(panel);
+
         image = new JLabel(getIcon(1));
-        add(image);
+        panel.add(image);
 
         wrong_guesses = new JLabel();
         wrong_guesses.setMinimumSize(new Dimension(100, 50));
@@ -56,7 +63,7 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
 
         JLabel fireComponent = new JLabel();
         fireComponent.setSize(new Dimension(200, 200));
-        add(fireComponent);
+        panel.add(fireComponent);
 
         AnimationSprites animationSprites = new AnimationSprites();
         animationSprites.addAnimation("fire", fireSprites);
@@ -148,6 +155,16 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
                 getHeight() / 2
             )
         );
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "HangMan";
     }
 
     @Override

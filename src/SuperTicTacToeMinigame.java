@@ -1,4 +1,5 @@
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
 
 import javax.sound.sampled.Line;
 import javax.swing.*;
@@ -8,6 +9,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public class SuperTicTacToeMinigame extends Minigame {
     private Integer[][][][] state;
@@ -224,6 +226,16 @@ public class SuperTicTacToeMinigame extends Minigame {
         }
 
         return isLeftDiagonal(matrix, current) || isRightDiagonal(matrix, current);
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\SuperTicTacToe.jfif");
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "Super TicTacToe";
     }
 
     @Override

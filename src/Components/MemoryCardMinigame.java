@@ -2,6 +2,7 @@ package Components;
 
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
+import Core.GameSystem.JGameObjectInterface;
 import Core.GameSystem.JLabelExtended;
 import Utility.Console;
 import Utility.RandomUtilities;
@@ -12,9 +13,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class MemoryCardMinigame extends JGameObject implements MouseListener {
+public class MemoryCardMinigame extends Minigame implements JGameObjectInterface, MouseListener {
     JPanel panel;
     private int firstX = -1;
     private int firstY = -1;
@@ -159,7 +161,6 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
 
     @Override
     public void update(float delta) {
-        super.update(delta);
 
         delay += delta;
 
@@ -207,6 +208,31 @@ public class MemoryCardMinigame extends JGameObject implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "Memory Cards!";
+    }
+
+    @Override
+    public void showMinigame() {
+
+    }
+
+    @Override
+    public void hideMinigame() {
+
+    }
+
+    @Override
+    public void resetMinigame() {
 
     }
 }

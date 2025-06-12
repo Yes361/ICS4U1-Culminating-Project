@@ -1,3 +1,4 @@
+import Components.Minigame;
 import Core.GameSystem.AssetManager;
 import Utility.Console;
 import Utility.WordList;
@@ -6,10 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class WordleMinigame extends JPanel implements KeyListener {
+public class WordleMinigame extends Minigame implements KeyListener {
     private String currentWord;
     private String[] guesses;
     private int currentGuessIndex = 0;
@@ -18,6 +20,9 @@ public class WordleMinigame extends JPanel implements KeyListener {
         WordList.parseWordsFromFile(AssetManager.getResourceDirectory("Miscellaneous\\valid-wordle-words.txt"));
 
         setBounds(0, 0, 900, 600);
+
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+//        setLayout(boxLayout);
         setLayout(null);
 
         currentWord = WordList.getRandomWordLength(5);
@@ -123,6 +128,16 @@ public class WordleMinigame extends JPanel implements KeyListener {
     }
 
     @Override
+    public BufferedImage getMinigameIcon() {
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "Wordle";
+    }
+
+    @Override
     public void keyTyped(KeyEvent e) {
 
     }
@@ -134,6 +149,21 @@ public class WordleMinigame extends JPanel implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void showMinigame() {
+
+    }
+
+    @Override
+    public void hideMinigame() {
+
+    }
+
+    @Override
+    public void resetMinigame() {
 
     }
 }

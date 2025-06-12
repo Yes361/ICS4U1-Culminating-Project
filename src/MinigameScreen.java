@@ -3,67 +3,119 @@ import Components.Minigame;
 import Core.GameSystem.JGameObject;
 import Core.GameSystem.JGameObjectInterface;
 import Utility.Console;
+import Utility.SwingUtilities;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
 
 public class MinigameScreen extends JPanel implements JGameObjectInterface {
     JGameObject root;
-    MemoryCardMinigame memoryCardMinigame;
-    HangManMinigame hangManMinigame;
-    WordleMinigame wordleMinigame;
-    TicTacToeMinigame ticTacToeMinigame;
-    SuperTicTacToeMinigame superTicTacToeMinigame;
-    Connect4Minigame connect4Minigame;
-    MinesweeperMinigame minesweeperMinigame;
     Minigame[] minigames;
 
     public MinigameScreen() {
         setBounds(0, 0, 900, 600);
         setLayout(null);
         setOpaque(true);
+        setBackground(Color.BLACK);
 
         root = new JGameObject();
         root.setOpaque(true);
         root.setLayout(null);
         root.setBounds(0, 0, getWidth(), getHeight());
 
-        memoryCardMinigame = new MemoryCardMinigame();
-        memoryCardMinigame.setFocusable(true);
-        memoryCardMinigame.setVisible(false);
-        root.addChild(memoryCardMinigame);
+        minigames = new Minigame[]{
+            new MemoryCardMinigame(),
+            new HangManMinigame(),
+            new TicTacToeMinigame(),
+            new WordleMinigame(),
+            new SuperTicTacToeMinigame(),
+            new Connect4Minigame(),
+            new MinesweeperMinigame(),
+            new OthelloMinigame()
+        };
 
-        hangManMinigame = new HangManMinigame();
-        hangManMinigame.setFocusable(true);
-        hangManMinigame.setVisible(false);
-        root.add(hangManMinigame);
+        GridLayout gridLayout = new GridLayout(4, 2);
+        gridLayout.setVgap(10);
+        gridLayout.setHgap(40);
 
-        ticTacToeMinigame = new TicTacToeMinigame();
-        ticTacToeMinigame.setFocusable(true);
-        ticTacToeMinigame.setVisible(true);
-        root.add(ticTacToeMinigame);
+        JPanel minigameCatalogue = new JPanel();
+//        BoxLayout boxLayout = new BoxLayout(minigameCatalogue, BoxLayout.PAGE_AXIS);
+//        minigameCatalogue.setLayout(boxLayout);
 
-        wordleMinigame = new WordleMinigame();
-        wordleMinigame.setFocusable(true);
-        wordleMinigame.setVisible(false);
-        root.add(wordleMinigame);
+        minigameCatalogue.setBorder(new EmptyBorder(10, 10, 10, 10));
+        minigameCatalogue.setBounds(0, 0, getWidth(), getHeight());
+        minigameCatalogue.setLayout(gridLayout);
+        minigameCatalogue.setOpaque(false);
 
-        superTicTacToeMinigame = new SuperTicTacToeMinigame();
-        superTicTacToeMinigame.setFocusable(true);
-        superTicTacToeMinigame.setVisible(false);
-        root.add(superTicTacToeMinigame);
+//        scrollCatalogue.add(minigameCatalogue);
 
-        connect4Minigame = new Connect4Minigame();
-        connect4Minigame.setFocusable(true);
-        connect4Minigame.setVisible(false);
-        root.add(connect4Minigame);
+        minigameCatalogue.setVisible(true);
+//        add(minigameCatalogue);
 
-        minesweeperMinigame = new MinesweeperMinigame();
-        minesweeperMinigame.setFocusable(true);
-        minesweeperMinigame.setVisible(false);
-        root.add(minesweeperMinigame);
+        for (int i = 0;i < minigames.length;i++) {
+            Minigame minigame = minigames[i];
+            minigame.setFocusable(false);
+            minigame.setVisible(false);
 
-        root.setVisible(true);
+            JButton button = new JButton();
+//            button.setText(minigame.getMinigameName());
+
+            minigameCatalogue.add(button);
+            root.add(minigames[i]);
+
+            button.addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    if (minigame.getMinigameIcon() != null) {
+                        BufferedImage bufferedImage = minigame.getMinigameIcon();
+                        Insets insets = button.getBorder().getBorderInsets(button);
+                        button.setIcon(new ImageIcon(SwingUtilities.resizeImageAspectLockedWithMinDimensions(bufferedImage, button.getWidth() - insets.left - insets.right, button.getHeight() - insets.top - insets.bottom)));
+                    }
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+
+                }
+            });
+
+            int index = i;
+
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    root.setVisible(true);
+                    minigameCatalogue.setVisible(false);
+
+                    minigame.setVisible(true);
+                    minigame.showMinigame();
+                    minigame.resetMinigame();
+                }
+            });
+        }
+
+        JScrollPane scrollCatalogue = new JScrollPane(minigameCatalogue, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollCatalogue.setBounds(0, 0, getWidth(), getHeight());
+        scrollCatalogue.setOpaque(false);
+        add(scrollCatalogue);
+
+        root.setVisible(false);
         add(root);
 
         repaint();
@@ -71,18 +123,6 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
 
     public void SwitchGame() {
 
-    }
-
-    public TicTacToeMinigame getTicTacToeMinigame() {
-        return ticTacToeMinigame;
-    }
-
-    public HangManMinigame getHangManMinigame() {
-        return hangManMinigame;
-    }
-
-    public WordleMinigame getWordleMinigame() {
-        return wordleMinigame;
     }
 
     @Override

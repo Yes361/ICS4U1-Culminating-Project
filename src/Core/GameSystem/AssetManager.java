@@ -47,6 +47,13 @@ public class AssetManager {
         return getBufferedSprite(filePath).getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
 
+    public static Image getBufferedSpriteLocked(String filePath, int width) {
+        BufferedImage bufferedImage = getBufferedSprite(filePath);
+
+        double aspectRatio = (double) bufferedImage.getHeight() / bufferedImage.getWidth();
+        return bufferedImage.getScaledInstance(width, (int) (aspectRatio * width), Image.SCALE_SMOOTH);
+    }
+
     public static Image getBufferedSpriteAbs(String absFilePath, int width, int height) {
         try {
             return ImageIO.read(new File(absFilePath)).getScaledInstance(width, height, Image.SCALE_SMOOTH);

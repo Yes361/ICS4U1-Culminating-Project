@@ -1,9 +1,11 @@
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class MinesweeperMinigame extends Minigame {
@@ -36,6 +38,8 @@ public class MinesweeperMinigame extends Minigame {
         for (int i = 0;i < width;i++) {
             for (int j = 0;j < height;j++) {
                 JButton button = new JButton();
+//                button.setBackground();
+                button.setFocusPainted(false);
 
                 int row = i;
                 int col = j;
@@ -44,7 +48,7 @@ public class MinesweeperMinigame extends Minigame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (bombs[row][col]) {
-                            button.setText("BOMB!");
+                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("minigame\\Minesweeper\\TNT.png")));
                             discovered[row][col] = true;
                         } else {
                             floodfill(row, col);
@@ -133,6 +137,16 @@ public class MinesweeperMinigame extends Minigame {
                 }
             }
         }
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "Minesweeper";
     }
 
     @Override

@@ -7,6 +7,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public class Connect4Minigame extends Minigame {
     private int currentTurn = 1;
@@ -181,6 +182,16 @@ public class Connect4Minigame extends Minigame {
         }
 
         return true;
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "Connect 4";
     }
 
     @Override

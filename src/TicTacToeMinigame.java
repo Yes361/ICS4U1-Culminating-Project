@@ -1,10 +1,15 @@
 import Components.Minigame;
 import Core.GameSystem.AssetManager;
+import Utility.SwingUtilities;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public class TicTacToeMinigame extends Minigame {
     private JPanel gamePanel;
@@ -24,6 +29,15 @@ public class TicTacToeMinigame extends Minigame {
     public void createMinigame() {
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
+
+        setMaximumSize(new Dimension(2 * getWidth() / 3, getHeight()));
+
+        JLabel titleLabel = new JLabel("TicTacToe Minigame!");
+        SwingUtilities.resizeFont(titleLabel, 24);
+
+        add(titleLabel);
+
+        add(Box.createVerticalStrut(10));
 
         createBoard();
 
@@ -57,11 +71,14 @@ public class TicTacToeMinigame extends Minigame {
 
         cells = new JButton[length][length];
 
+        int borderThickness = 30;
+
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 JButton button = new JButton();
+                button.setSize(100, 100);
                 button.setFocusPainted(false);
-//                button.
+                button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(borderThickness, borderThickness, borderThickness, borderThickness)));
 
                 int row = i;
                 int col = j;
@@ -73,12 +90,13 @@ public class TicTacToeMinigame extends Minigame {
                             return;
                         }
 
+                        String imagePath;
                         if (currentTurn) {
                             state[row][col] = 2;
-                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("Minigame\\TicTacToe\\TicTacToeAnion.png")));
+                            button.setIcon(new ImageIcon(AssetManager.getBufferedSpriteLocked("Minigame\\TicTacToe\\TicTacToeAnion.png", (int) button.getBounds().getWidth() - 2 * borderThickness)));
                         } else {
                             state[row][col] = 1;
-                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("Minigame\\TicTacToe\\TicTacToeCation.png")));
+                            button.setIcon(new ImageIcon(AssetManager.getBufferedSpriteLocked("Minigame\\TicTacToe\\TicTacToeCation.png", (int) button.getBounds().getWidth() - 2 * borderThickness)));
                         }
 
                         if (isWin()) {
@@ -170,6 +188,17 @@ public class TicTacToeMinigame extends Minigame {
             }
         }
         return true;
+    }
+
+    @Override
+    public BufferedImage getMinigameIcon() {
+//        return new ImageIcon(AssetManager.getBufferedSprite("Minigame\\Thumbnails\\"));
+        return null;
+    }
+
+    @Override
+    public String getMinigameName() {
+        return "TicTacToe";
     }
 
     @Override
