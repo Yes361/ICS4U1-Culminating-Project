@@ -1,19 +1,35 @@
 package Utility;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Clock {
-    private long start = 0;
-    private long end = 0;
+    private HashMap<String, ArrayList<Long>> times = new HashMap<>();
 
-    public void startWatch() {
-        start = System.nanoTime();
+    public void startWatch(String identifier) {
+        ArrayList<Long> timesForIdentifier = new ArrayList<>();
+        timesForIdentifier.add(System.nanoTime());
+
+        times.put(identifier, timesForIdentifier);
     }
 
-    public double endStopWatch() {
-        end = System.nanoTime();
-        return getTimeElapsed();
+    public void stopWatch(String identifier) {
+        double timeElapsed = getTimeElapsed(identifier);
+        times.remove(identifier);
     }
 
-    public double getTimeElapsed() {
-        return (start - end) / 1e6;
+    public void pause(String identifier) {
+        times.get(identifier).add(System.nanoTime());
+    }
+
+    public double getTimeElapsed(String identifier) {
+        long timeElapsed = 0;
+        ArrayList<Long> timeForIdentifier = times.get(identifier);
+
+        for (int i = 0;i < timeForIdentifier.size() - 1;i+=2) {
+            timeElapsed += timeForIdentifier.get(i + 1) - timeForIdentifier.get(i);
+        }
+
+        return timeElapsed / 1e6;
     }
 }

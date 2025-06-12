@@ -1,5 +1,6 @@
 package Animation;
 
+import Utility.Console;
 import Utility.EventEmitter;
 
 import javax.swing.*;

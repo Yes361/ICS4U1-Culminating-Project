@@ -1,4 +1,5 @@
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,12 @@ public class TicTacToeMinigame extends Minigame {
     }
 
     public void createMinigame() {
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        setLayout(boxLayout);
+
         createBoard();
+
+        add(Box.createVerticalStrut(10));
 
         messageLabel = new JLabel();
         add(messageLabel);
@@ -34,12 +40,15 @@ public class TicTacToeMinigame extends Minigame {
             }
         });
 
+        add(Box.createVerticalStrut(10));
+
         add(resetButton);
     }
 
     public void createBoard() {
         state = new int[length][length];
 
+//        GridBagLayout gridBagLayout = new GridBagLayout();
         GridLayout gridLayout = new GridLayout(length, length);
         gamePanel = new JPanel();
         gamePanel.setMinimumSize(new Dimension(300, 300));
@@ -51,6 +60,8 @@ public class TicTacToeMinigame extends Minigame {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 JButton button = new JButton();
+                button.setFocusPainted(false);
+//                button.
 
                 int row = i;
                 int col = j;
@@ -63,13 +74,11 @@ public class TicTacToeMinigame extends Minigame {
                         }
 
                         if (currentTurn) {
-                            button.setText("O");
                             state[row][col] = 2;
-//                          button.setIcon();
+                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("Minigame\\TicTacToe\\TicTacToeAnion.png")));
                         } else {
-                            button.setText("X");
                             state[row][col] = 1;
-//                          button.setIcon();
+                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("Minigame\\TicTacToe\\TicTacToeCation.png")));
                         }
 
                         if (isWin()) {

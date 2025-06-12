@@ -146,8 +146,6 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
                 minigameScreen.setVisible(true);
                 minigameScreen.setFocusable(true);
                 minigameScreen.requestFocus();
-
-                minigameScreen.getTicTacToeMinigame().requestFocus();
             }
 
             public void mouseClicked(MouseEvent e) {}

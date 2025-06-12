@@ -1,4 +1,5 @@
 import Components.MemoryCardMinigame;
+import Components.Minigame;
 import Core.GameSystem.JGameObject;
 import Core.GameSystem.JGameObjectInterface;
 import Utility.Console;
@@ -12,6 +13,10 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
     HangManMinigame hangManMinigame;
     WordleMinigame wordleMinigame;
     TicTacToeMinigame ticTacToeMinigame;
+    SuperTicTacToeMinigame superTicTacToeMinigame;
+    Connect4Minigame connect4Minigame;
+    MinesweeperMinigame minesweeperMinigame;
+    Minigame[] minigames;
 
     public MinigameScreen() {
         setBounds(0, 0, 900, 600);
@@ -23,8 +28,10 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
         root.setLayout(null);
         root.setBounds(0, 0, getWidth(), getHeight());
 
-//        memoryCardMinigame = new MemoryCardMinigame();
-//        root.addChild(memoryCardMinigame);
+        memoryCardMinigame = new MemoryCardMinigame();
+        memoryCardMinigame.setFocusable(true);
+        memoryCardMinigame.setVisible(false);
+        root.addChild(memoryCardMinigame);
 
         hangManMinigame = new HangManMinigame();
         hangManMinigame.setFocusable(true);
@@ -41,11 +48,20 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
         wordleMinigame.setVisible(false);
         root.add(wordleMinigame);
 
+        superTicTacToeMinigame = new SuperTicTacToeMinigame();
+        superTicTacToeMinigame.setFocusable(true);
+        superTicTacToeMinigame.setVisible(false);
+        root.add(superTicTacToeMinigame);
 
-        wordleMinigame = new WordleMinigame();
-        wordleMinigame.setFocusable(true);
-        wordleMinigame.setVisible(false);
-        root.add(wordleMinigame);
+        connect4Minigame = new Connect4Minigame();
+        connect4Minigame.setFocusable(true);
+        connect4Minigame.setVisible(false);
+        root.add(connect4Minigame);
+
+        minesweeperMinigame = new MinesweeperMinigame();
+        minesweeperMinigame.setFocusable(true);
+        minesweeperMinigame.setVisible(false);
+        root.add(minesweeperMinigame);
 
         root.setVisible(true);
         add(root);
@@ -56,7 +72,6 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
     public void SwitchGame() {
 
     }
-
 
     public TicTacToeMinigame getTicTacToeMinigame() {
         return ticTacToeMinigame;
@@ -73,10 +88,5 @@ public class MinigameScreen extends JPanel implements JGameObjectInterface {
     @Override
     public void update(float delta) {
         root.UpdateHandler(delta);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
     }
 }

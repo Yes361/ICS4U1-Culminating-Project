@@ -22,4 +22,8 @@ public class RandomUtilities {
             list[i] = a;
         }
     }
+
+    public static boolean performRNG(float probability) {
+        return rand.nextDouble() < probability;
+    }
 }
