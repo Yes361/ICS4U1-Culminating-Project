@@ -3,8 +3,7 @@ import Animation.Tween.AnimationTweenBuilder;
 import Animation.Tween.TweenListener;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
-import Utility.Console;
-import Utility.GraphicUtilies;
+import Utility.graphicUtilities;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -13,9 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MenuScreen extends JPanel implements JGameObjectInterface {
@@ -52,7 +49,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
             @Override
             protected void paintComponent(Graphics graphics) {
                 super.paintComponent(graphics);
-                GraphicUtilies.applyLinearGraient(graphics, Color.BLACK, getWidth(), getHeight());
+                graphicUtilities.applyLinearGraient(graphics, Color.BLACK, getWidth(), getHeight());
             }
         };
 

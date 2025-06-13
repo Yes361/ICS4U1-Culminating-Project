@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class SwingUtilities {
+public class JSwingUtilities {
     public static void resizeFont(JComponent component, int size) {
         Font font = component.getFont();
         component.setFont(new Font(font.getFontName(), Font.PLAIN, size));
@@ -12,6 +12,11 @@ public class SwingUtilities {
 
     public static Image resizeImageAspectLocked(BufferedImage bufferedImage, int width) {
         double aspectRatio = (double) bufferedImage.getHeight() / bufferedImage.getWidth();
+        return bufferedImage.getScaledInstance(width, (int) (aspectRatio * width), Image.SCALE_SMOOTH);
+    }
+
+    public static Image resizeImageAspectLocked(JComponent reference, Image bufferedImage, int width) {
+        double aspectRatio = (double) bufferedImage.getHeight(reference) / bufferedImage.getWidth(reference);
         return bufferedImage.getScaledInstance(width, (int) (aspectRatio * width), Image.SCALE_SMOOTH);
     }
 

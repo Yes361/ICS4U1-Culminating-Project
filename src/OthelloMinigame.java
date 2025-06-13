@@ -1,4 +1,5 @@
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
 
 import javax.swing.*;
@@ -69,7 +70,7 @@ public class OthelloMinigame extends Minigame {
 
     @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\Othello.jfif");
     }
 
     @Override

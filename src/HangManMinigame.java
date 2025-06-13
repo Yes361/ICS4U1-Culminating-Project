@@ -6,6 +6,7 @@ import Components.Minigame;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
 import Utility.Console;
+import Utility.JSwingUtilities;
 import Utility.WordList;
 
 import javax.swing.*;
@@ -30,29 +31,40 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
 
     public HangManMinigame() {
         setBounds(0, 0, 900, 600);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JPanel panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel,BoxLayout.PAGE_AXIS);
         panel.setLayout(boxLayout);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setOpaque(false);
 
         add(panel);
 
         image = new JLabel(getIcon(1));
         panel.add(image);
 
+        JPanel panelSKIB = new JPanel();
+        BoxLayout boxLayout1 = new BoxLayout(panelSKIB, BoxLayout. PAGE_AXIS);
+        panelSKIB.setLayout(boxLayout1);
+
         wrong_guesses = new JLabel();
-        wrong_guesses.setMinimumSize(new Dimension(100, 50));
+        Dimension dimension = new Dimension(200, 50);
+        wrong_guesses.setMinimumSize(dimension);
+        wrong_guesses.setPreferredSize(dimension);
+        wrong_guesses.setMaximumSize(dimension);
         wrong_guesses.setBorder(new CompoundBorder(new TitledBorder("Wrong Guesses"), new EmptyBorder(10, 10, 10, 10)));
-        add(wrong_guesses);
+        panelSKIB.add(wrong_guesses);
 
         messageLabel = new JLabel();
-        add(messageLabel);
+        panelSKIB.add(messageLabel);
 
         currentLabel = new JLabel();
         currentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         currentLabel.setBounds(450, 300, 100, 30);
+        panelSKIB.add(currentLabel);
 
-        add(currentLabel);
+        add(panelSKIB);
 
         AnimationSprite fireSprites = new AnimationSprite(
             80,
@@ -75,7 +87,8 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
                 String currentAnimationName = (String) args[0];
                 int currentFrame = (int) args[1];
 
-                fireComponent.setIcon(new ImageIcon(fireRenderer.getCurrentSprite().image()));
+                Image fireImage = fireRenderer.getCurrentSprite().image();
+                fireComponent.setIcon(new ImageIcon(JSwingUtilities.resizeImageAspectLocked(fireComponent, fireImage, image.getWidth())));
             }
         });
         fireRenderer.setCurrentAnimation("fire");
@@ -96,8 +109,6 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
             return;
         }
 
-//        Console.println("Debug:", currentWord);
-
         String skib = String.valueOf(e.getKeyChar());
         StringBuilder currentText = new StringBuilder(currentLabel.getText());
 
@@ -116,7 +127,6 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
                 if (currentWord.charAt(i) == e.getKeyChar()) {
                     currentText.setCharAt(2 * i, e.getKeyChar());
                     discovered[i] = true;
-//                    Console.println(Arrays.toString(discovered));
                 }
             }
         } else {
@@ -158,8 +168,16 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
     }
 
     @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGHangMolecule.jpeg"), getWidth(), getHeight());
+        g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\Hang Molecule.jfif");
     }
 
     @Override
@@ -179,8 +197,9 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
 
     @Override
     public void showMinigame() {
-        requestFocus();
         setVisible(true);
+        setFocusable(true);
+        requestFocus();
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-public class GraphicUtilies {
+public class graphicUtilities {
 //    private static final
 
     public static boolean containsPoint(Point point, Point topleft, int width, int height) {

@@ -1,5 +1,7 @@
 import Components.Minigame;
 import Core.GameSystem.AssetManager;
+import Utility.Console;
+import Utility.JSwingUtilities;
 
 import javax.sound.sampled.Line;
 import javax.swing.*;
@@ -10,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class SuperTicTacToeMinigame extends Minigame {
     private Integer[][][][] state;
@@ -46,7 +50,11 @@ public class SuperTicTacToeMinigame extends Minigame {
         GridLayout gridLayout = new GridLayout(3, 3);
         gamePanel = new JPanel(gridLayout);
         gamePanel.setLayout(gridLayout);
-        gamePanel.setBounds(0, 0, 300, 300);
+
+        Dimension dimension = new Dimension(500, 500);
+        gamePanel.setPreferredSize(dimension);
+        gamePanel.setMinimumSize(dimension);
+        gamePanel.setMaximumSize(dimension);
         gamePanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
 
         state = new Integer[3][3][3][3];
@@ -66,17 +74,44 @@ public class SuperTicTacToeMinigame extends Minigame {
 
     public JPanel createCellPanel(int x, int y) {
         GridLayout gridLayout = new GridLayout(3, 3);
-        JPanel cellPanel = new JPanel();
-        cellPanel.setLayout(gridLayout);
-        cellPanel.setBounds(x * 100, y * 100, 100, 100);
+        JPanel cellPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (finalStates[x][y] != null) {
+                    Color color = g.getColor();
 
-        cellPanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
+                    switch (finalStates[x][y]) {
+                        case DRAW -> {
+                            g.drawLine(0, 0, this.getWidth(), this.getHeight());
+                        }
+                        case P1_WIN -> {
+                            g.setColor(Color.BLUE);
+                            g.drawOval(0, 0, this.getWidth(), this.getHeight());
+                        }
+                        case P2_WIN -> {
+                            g.setColor(Color.RED);
+                            g.drawLine(0, 0, this.getWidth(), this.getHeight());
+                            g.drawLine(this.getWidth(), 0, 0, this.getHeight());
+                        }
+                    }
+
+                    g.setColor(color);
+                }
+            }
+        };
+        cellPanel.setLayout(gridLayout);
+
+        cellPanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(10, 10, 10, 10)));
         panels[x][y] = cellPanel;
 
         for (int i = 0;i < 3;i++) {
             for (int j = 0;j < 3;j++) {
                 JButton button = new JButton();
-//                button.setMinimumSize(new Dimension(10, 10));
+                JSwingUtilities.resizeFont(button, 12);
+
+                button.setFocusPainted(false);
+                button.setBackground(Color.WHITE);
 
                 int row = i;
                 int col = j;
@@ -93,10 +128,14 @@ public class SuperTicTacToeMinigame extends Minigame {
                         }
 
                         if (currentTurn == 1) {
+                            button.setForeground(Color.BLUE);
                             button.setText("O");
                         } else {
+                            button.setForeground(Color.RED);
                             button.setText("X");
                         }
+
+                        state[x][y][row][col] = currentTurn;
 
                         if (isWin(state[x][y], currentTurn)) {
                             if (currentTurn == 1) {
@@ -104,8 +143,12 @@ public class SuperTicTacToeMinigame extends Minigame {
                             } else {
                                 finalStates[x][y] = finalState.P2_WIN;
                             }
+
+                            repaint();
                         } else if (isDraw(null, state[x][y])) {
                             finalStates[x][y] = finalState.DRAW;
+
+                            repaint();
                         }
 
                         if (isWin(finalStates, finalState.P1_WIN)) {
@@ -120,7 +163,11 @@ public class SuperTicTacToeMinigame extends Minigame {
                             regionSelectorRow = -1;
                             regionSelectorCol = -1;
 
-                            setPanelBorderColor(gamePanel, Color.RED);
+                            if (currentTurn == 1) {
+                                setPanelBorderColor(gamePanel, Color.RED);
+                            } else {
+                                setPanelBorderColor(gamePanel, Color.BLUE);
+                            }
 
                             for (Component component : gamePanel.getComponents()) {
                                 if (component instanceof JPanel panel) {
@@ -140,7 +187,11 @@ public class SuperTicTacToeMinigame extends Minigame {
                                 }
                             }
 
-                            setPanelBorderColor(panels[row][col], Color.RED);
+                            if (currentTurn == 1) {
+                                setPanelBorderColor(panels[row][col], Color.RED);
+                            } else {
+                                setPanelBorderColor(panels[row][col], Color.BLUE);
+                            }
                         }
 
                         nextTurn();
@@ -157,7 +208,7 @@ public class SuperTicTacToeMinigame extends Minigame {
 
     private void setPanelBorderColor(JComponent component, Color color) {
         CompoundBorder border = (CompoundBorder) component.getBorder();
-        component.setBorder(new CompoundBorder(new LineBorder(color), border.getInsideBorder()));
+        component.setBorder(new CompoundBorder(new LineBorder(color, 2), border.getInsideBorder()));
     }
 
     public void nextTurn() {
@@ -205,7 +256,7 @@ public class SuperTicTacToeMinigame extends Minigame {
 
     private <T> boolean isRightDiagonal(T[][] matrix, T current) {
         for (int i = 0;i < matrix.length;i++) {
-            if (matrix[i][i] != current) {
+            if (matrix[i][matrix.length - i - 1] != current) {
                 return false;
             }
         }
@@ -226,6 +277,14 @@ public class SuperTicTacToeMinigame extends Minigame {
         }
 
         return isLeftDiagonal(matrix, current) || isRightDiagonal(matrix, current);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGSuperTicTacToe.jpeg"), getWidth(), getHeight());
+        g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
     }
 
     @Override

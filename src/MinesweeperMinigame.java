@@ -1,21 +1,34 @@
 import Components.Minigame;
 import Core.GameSystem.AssetManager;
+import Utility.Console;
+import Utility.JSwingUtilities;
+import Utility.MathUtilities;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class MinesweeperMinigame extends Minigame {
-    private int width = 10;
-    private int height = 10;
+    private int width = 15;
+    private int height = 15;
     private JPanel gamePanel;
     private JButton[][] cells;
     private boolean[][] bombs;
     private int[][] neighbors;
     private boolean[][] discovered;
+    private boolean[][] flagged;
+    private JLabel messageLabel;
+    private boolean lost = false;
+    private boolean won = false;
+    private boolean flagSelectorMode = false;
+    private int bombCount = 10;
 
     public MinesweeperMinigame() {
         setBounds(0, 0, 900, 600);
@@ -23,46 +36,206 @@ public class MinesweeperMinigame extends Minigame {
     }
 
     public void createMinigame() {
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        setLayout(boxLayout);
+
+        JLabel titleLabel = new JLabel("Minesweeper");
+        titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+        JSwingUtilities.resizeFont(titleLabel, 24);
+        titleLabel.setForeground(Color.WHITE);
+
+        add(titleLabel);
+
+        createBoard();
+
+        JPanel report = new JPanel();
+        report.setOpaque(false);
+
+        messageLabel = new JLabel();
+        report.add(messageLabel);
+
+        JPanel container = new JPanel();
+        container.setOpaque(false);
+        container.setLayout(new FlowLayout());
+
+        int maxBombs = 30;
+        JSlider slider = new JSlider(10, maxBombs);
+        JTextField textField = new JTextField();
+        JLabel currentValue = new JLabel();
+        textField.setMinimumSize(new Dimension(100, 50));
+
+        container.add(currentValue);
+
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                bombCount = slider.getValue();
+                resetMinigame();
+
+                currentValue.setText(String.valueOf(bombCount));
+                textField.setText(String.valueOf(bombCount));
+            }
+        });
+
+        container.add(slider);
+
+        textField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+
+                String currentText = textField.getText() + e.getKeyChar();
+
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume();
+                } else {
+                    int value = Integer.parseInt(currentText);
+
+                    if (value > maxBombs || value < 0) {
+                        value = MathUtilities.constrain(0, maxBombs, value);
+
+                        textField.setText(String.valueOf(value));
+                    }
+
+                    slider.setValue(value);
+                    currentValue.setText(currentText);
+                }
+            }
+        });
+
+        container.add(textField);
+
+        JButton button = new JButton("Reset");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetMinigame();
+            }
+        });
+
+
+        report.add(container);
+        report.add(button);
+        add(report);
+    }
+
+    private void createBoard() {
         GridLayout gridLayout = new GridLayout(width, height);
         gridLayout.setHgap(1);
         gridLayout.setVgap(1);
 
         gamePanel = new JPanel();
-        gamePanel.setBounds(100, 100, 400, 400);
         gamePanel.setLayout(gridLayout);
 
+        Dimension dimension = new Dimension(width * 30, height * 30);
+        gamePanel.setMaximumSize(dimension);
+        gamePanel.setMinimumSize(dimension);
+        gamePanel.setPreferredSize(dimension);
+
         cells = new JButton[width][height];
-        discovered = new boolean[width][height];
-        randomize();
 
         for (int i = 0;i < width;i++) {
             for (int j = 0;j < height;j++) {
-                JButton button = new JButton();
-//                button.setBackground();
-                button.setFocusPainted(false);
-
-                int row = i;
-                int col = j;
-
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (bombs[row][col]) {
-                            button.setIcon(new ImageIcon(AssetManager.getBufferedSprite("minigame\\Minesweeper\\TNT.png")));
-                            discovered[row][col] = true;
-                        } else {
-                            floodfill(row, col);
-                        }
-
-                    }
-                });
+                JButton button = createButton(i, j);
 
                 cells[i][j] = button;
                 gamePanel.add(button);
             }
         }
 
+        resetMinigame();
+
         add(gamePanel);
+    }
+
+    private JButton createButton(int row, int col) {
+        JButton button = new JButton();
+        button.setFocusPainted(false);
+        button.setForeground(Color.BLACK);
+        button.setBackground(Color.DARK_GRAY);
+        button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
+        button.setFocusPainted(false);
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (flagSelectorMode) {
+                    markFlag(row, col);
+                } else {
+                    if (flagged[row][col]) {
+                        return;
+                    }
+
+                    if (lost || won) {
+                        return;
+                    }
+
+                    if (bombs[row][col]) {
+                        lost = true;
+                        messageLabel.setText("You Lost!");
+
+                        for (int i = 0;i < width;i++) {
+                            for (int j = 0;j < height;j++) {
+                                if (bombs[i][j]) {
+                                    cells[i][j].setIcon(new ImageIcon(AssetManager.getBufferedSprite("minigame\\Minesweeper\\TNT.png")));
+                                    discovered[row][col] = true;
+                                }
+                            }
+                        }
+                    } else {
+                        floodfill(row, col);
+                    }
+                }
+            }
+        });
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+
+                if (SwingUtilities.isRightMouseButton(e) && !discovered[row][col]) {
+                    markFlag(row, col);
+                }
+            }
+        });
+
+        return button;
+    }
+
+    private boolean isBombsFlagged() {
+        for (int i = 0;i < width;i++) {
+            for (int j = 0;j < height;j++) {
+                if (bombs[i][j] && !flagged[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isWin() {
+        if (isBombsFlagged()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void markFlag(int row, int col) {
+        flagged[row][col] = !flagged[row][col];
+
+        if (flagged[row][col]) {
+            cells[row][col].setIcon(new ImageIcon(AssetManager.getBufferedSprite("minigame\\Minesweeper\\Flag.png")));
+        } else {
+            cells[row][col].setIcon(null);
+        }
+
+        if (isWin()) {
+            won = true;
+            messageLabel.setText("You Won!");
+        }
     }
 
     public void floodfill(int x, int y) {
@@ -75,9 +248,9 @@ public class MinesweeperMinigame extends Minigame {
         }
 
         discovered[x][y] = true;
+        cells[x][y].setBackground(Color.LIGHT_GRAY);
 
         if (neighbors[x][y] == 0) {
-            cells[x][y].setBackground(Color.RED);
             floodfill(x - 1, y);
             floodfill(x + 1, y);
             floodfill(x, y - 1);
@@ -89,7 +262,6 @@ public class MinesweeperMinigame extends Minigame {
 
     public void randomize() {
         bombs = new boolean[width][height];
-        int bombCount = 10;
 
         Random random = new Random();
 
@@ -140,8 +312,16 @@ public class MinesweeperMinigame extends Minigame {
     }
 
     @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGMinesweeper.png"), getWidth(), getHeight());
+        g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\Minesweeper.jfif");
     }
 
     @Override
@@ -161,7 +341,21 @@ public class MinesweeperMinigame extends Minigame {
 
     @Override
     public void resetMinigame() {
+        for (int i = 0;i < width;i++) {
+            for (int j = 0;j < height;j++) {
+                cells[i][j].setBackground(Color.DARK_GRAY);
+                cells[i][j].setIcon(null);
+                cells[i][j].setText("");
+            }
+        }
 
+        lost = false;
+        won = false;
 
+        flagSelectorMode = false;
+
+        discovered = new boolean[width][height];
+        flagged = new boolean[width][height];
+        randomize();
     }
 }

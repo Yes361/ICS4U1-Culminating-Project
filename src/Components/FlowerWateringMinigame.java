@@ -3,9 +3,8 @@ package Components;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObject;
 import Utility.Console;
-import Utility.GraphicUtilies;
+import Utility.graphicUtilities;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -30,15 +29,15 @@ public class FlowerWateringMinigame extends JGameObject implements MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (GraphicUtilies.containsPoint(e.getPoint(), 0, 0, 64, 128)) {
+        if (graphicUtilities.containsPoint(e.getPoint(), 0, 0, 64, 128)) {
             Console.println(1);
         }
 
-        if (GraphicUtilies.containsPoint(e.getPoint(), 100, 0, 64, 128)) {
+        if (graphicUtilities.containsPoint(e.getPoint(), 100, 0, 64, 128)) {
             Console.println(2);
         }
 
-        if (GraphicUtilies.containsPoint(e.getPoint(), 200, 0, 64, 128)) {
+        if (graphicUtilities.containsPoint(e.getPoint(), 200, 0, 64, 128)) {
             Console.println(3);
         }
     }

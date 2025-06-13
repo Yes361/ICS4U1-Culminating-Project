@@ -1,6 +1,6 @@
 package Core.GameSystem;
 
-import Utility.GraphicUtilies;
+import Utility.graphicUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,8 +32,8 @@ public class JLabelExtended extends JLabel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        GraphicUtilies.rotateGraphics(g, getWidth() / 2, getHeight() / 2, rotation);
-        GraphicUtilies.rotateYGraphics(g, getWidth() / 2, getHeight() / 2, rotationY);
+        graphicUtilities.rotateGraphics(g, getWidth() / 2, getHeight() / 2, rotation);
+        graphicUtilities.rotateYGraphics(g, getWidth() / 2, getHeight() / 2, rotationY);
         super.paintComponent(g);
     }
 }

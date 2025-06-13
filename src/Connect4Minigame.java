@@ -1,4 +1,6 @@
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
+import Utility.JSwingUtilities;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -18,6 +20,8 @@ public class Connect4Minigame extends Minigame {
     private int width = 10;
     private int height = 10;
     private int required = 4;
+    private final Color DARK_BLUE = new Color(0, 0, 255);
+    private final Color LIGHT_BLUE = new Color(0, 0, 230);
 
     public Connect4Minigame() {
         setBounds(0, 0, 900, 600);
@@ -25,66 +29,57 @@ public class Connect4Minigame extends Minigame {
     }
 
     public void createMinigame() {
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        setLayout(boxLayout);
+
+        JLabel titleLabel = new JLabel("Connect 4 Minigame!");
+        titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+        JSwingUtilities.resizeFont(titleLabel, 24);
+        add(titleLabel);
+
+        add(Box.createVerticalStrut(10));
+
         createBoard();
+        add(Box.createVerticalStrut(10));
+
+        Container container = new Container();
+        container.setLayout(new FlowLayout());
 
         messageLabel = new JLabel();
-        add(messageLabel);
+        container.add(messageLabel);
+
+        JButton resetButton = new JButton("Reset !");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetMinigame();
+            }
+        });
+
+        container.add(resetButton);
+
+        add(container);
     }
 
     public void createBoard() {
         GridLayout gridLayout = new GridLayout(width, height);
-        gridLayout.setVgap(10);
-        gridLayout.setHgap(10);
+        gridLayout.setVgap(1);
+        gridLayout.setHgap(1);
 
         gamePanel = new JPanel();
-        gamePanel.setBounds(200, 200, width * 20, height * 20);
         gamePanel.setLayout(gridLayout);
 
-        if (cells != null) {
-//            do stuff
-        }
+        Dimension dimension = new Dimension(width * 50, height * 50);
+        gamePanel.setPreferredSize(dimension);
+        gamePanel.setMinimumSize(dimension);
+        gamePanel.setMaximumSize(dimension);
 
         cells = new JButton[width][height];
         state = new int[width][height];
 
         for (int i = 0;i < width;i++) {
             for (int j = 0;j < height;j++) {
-                JButton button = new JButton();
-                button.setSize(10, 10);
-                button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
-
-                int row = i;
-                int col = j;
-
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (state[row][col] != 0) {
-                            return;
-                        }
-
-                        int idx = row;
-                        while (++idx < state.length && state[idx][col] == 0);
-
-                        idx--;
-
-                        state[idx][col] = currentTurn;
-
-                        if (currentTurn == 1) {
-                            cells[idx][col].setText("O");
-                        } else {
-                            cells[idx][col].setText("X");
-                        }
-
-                        if (isWin()) {
-                            messageLabel.setText(String.format("Player %d wins!", currentTurn));
-                        } else if (isDraw()) {
-                            messageLabel.setText("Draw!");
-                        }
-
-                        nextTurn();
-                    }
-                });
+                JButton button = createButton(i, j);
 
                 gamePanel.add(button);
                 cells[i][j] = button;
@@ -94,11 +89,71 @@ public class Connect4Minigame extends Minigame {
         add(gamePanel);
     }
 
-    public void nextTurn() {
-        currentTurn = currentTurn == 1 ? 2 : 1;
+    private JButton createButton(int row, int col) {
+        JButton button = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Insets insets = this.getInsets();
+                int width = this.getWidth() - insets.left - insets.right;
+                int height = this.getHeight() - insets.top - insets.bottom;
+
+                Color color = g.getColor();
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+                g.setColor(Color.BLACK);
+                g.drawOval(insets.left, insets.top, width, height);
+
+                if (state[row][col] == 0) {
+                    g.setColor(DARK_BLUE);
+                } else if (state[row][col] == 1) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.GREEN);
+                }
+
+                g.fillOval(0, 0, this.getWidth(), this.getHeight());
+
+                g.setColor(color);
+            }
+        };
+        button.setSize(10, 10);
+        button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (state[row][col] != 0 || isWin()) {
+                    return;
+                }
+
+                int idx = row;
+                while (++idx < state.length && state[idx][col] == 0);
+
+                state[--idx][col] = currentTurn;
+                repaint();
+
+                if (isWin()) {
+                    messageLabel.setText(String.format("Player %d wins!", currentTurn));
+                } else if (isDraw()) {
+                    messageLabel.setText("Draw!");
+                } else {
+                    nextTurn();
+                }
+
+            }
+        });
+
+        return button;
     }
 
+    public void nextTurn() {
+        currentTurn = currentTurn == 1 ? 2 : 1;
 
+        messageLabel.setText(String.format("Player %d's Turn", currentTurn));
+    }
 
     public boolean isRow(int x, int y) {
         for (int i = 0;i < required;i++) {
@@ -186,7 +241,7 @@ public class Connect4Minigame extends Minigame {
 
     @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\ConnectFour.jfif");
     }
 
     @Override
@@ -206,6 +261,9 @@ public class Connect4Minigame extends Minigame {
 
     @Override
     public void resetMinigame() {
+        state = new int[width][height];
+        repaint();
 
+        messageLabel.setText("");
     }
 }
