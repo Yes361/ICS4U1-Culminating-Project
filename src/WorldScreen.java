@@ -34,7 +34,7 @@ public class WorldScreen extends JGameObject {
 
         tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
         tileLayoutRenderer.setTileMap(tileMap);
-        tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+        tileLayoutRenderer.createLayoutFromFile(AssetManager.getResourceDirectory("Layouts\\dorm.txt"));
 
         player = new Player();
         player.setFocusable(true);
@@ -112,6 +112,7 @@ public class WorldScreen extends JGameObject {
         camera2D.addChild(areaTriggerHall);
         camera2D.addChild(player);
         camera2D.addChild(tileLayoutRenderer);
+        camera2D.setOpaque(false);
 
         player.onMove(new EventListener() {
             @Override

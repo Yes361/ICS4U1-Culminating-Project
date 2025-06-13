@@ -28,13 +28,13 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
     private JTextArea label;
 
     public TextDialogDisplay() {
-        setBounds(0, 0, 900, 100);
+        setBounds(0, 400, 900, 100);
 
         setFocusable(true);
         grabFocus();
 
         setBackground(Color.BLACK);
-        setBorder(new CompoundBorder(new LineBorder(Color.WHITE, 10, false), new EmptyBorder(10, 10, 10, 10)));
+        setBorder(new CompoundBorder(new LineBorder(Color.WHITE, 10, false), new EmptyBorder(0, 0, 0, 0)));
 
         addKeyListener(this);
 

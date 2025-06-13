@@ -32,7 +32,7 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
         tileLayoutRenderer.setTileMap(tileMap);
 
-        file = new File(AssetManager.getResourceDirectory("Layouts\\layout.txt"));
+        file = new File(AssetManager.getResourceDirectory("Layouts\\dorm.txt"));
         tileLayoutRenderer.createLayoutFromFile(file);
 
         addMouseListener(this);
@@ -45,15 +45,6 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
         InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
 //        get(inputMap)
-
-
-//        if (e.getKeyCode() == KeyEvent.VK_W) {
-//            currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
-//        } else if (e.getKeyCode() == KeyEvent.VK_P) {
-//            tileLayoutRenderer.saveLayouts(file);
-//        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-//            tileLayoutRenderer.createLayoutFromFile(file);
-//        }
     }
 
     public void setFile(File file) {
@@ -62,6 +53,14 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     private void placeTile(int x, int y) {
         tileLayoutRenderer.getTileLayout(currentLayer).getTileLayout().get(x).set(y, currentTileName);
+
+        tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
+        tileLayoutRenderer.repaint();
+    }
+
+
+    private void deleteTile(int x, int y) {
+        tileLayoutRenderer.getTileLayout(currentLayer).getTileLayout().get(x).set(y, null);
 
         tileLayoutRenderer.setBounds(0, 0, getWidth(), getHeight());
         tileLayoutRenderer.repaint();
@@ -83,7 +82,11 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     @Override
     public void mousePressed(MouseEvent e) {
-        placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        if (SwingUtilities.isRightMouseButton(e)) {
+            deleteTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        } else {
+            placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        }
 //        System.out.println(tileLayoutRenderer.getTileLayout().get(e.getX() / tileWidth).get(e.getY() / tileHeight));
     }
 
@@ -113,7 +116,12 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
         mousePosition = e.getPoint();
         repaint();
 
-        placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        if (SwingUtilities.isRightMouseButton(e)) {
+            deleteTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        } else {
+            placeTile(e.getX() / tileWidth, e.getY() / tileHeight);
+        }
+
     }
 
     @Override
@@ -145,14 +153,26 @@ public class TileLayoutPalette extends JGameObject implements MouseListener, Mou
 
     }
 
+    public void increment() {
+        currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
+    }
+
+    public void saveLayouts() {
+        tileLayoutRenderer.saveLayouts(file);
+    }
+
+    public void loadLastSave() {
+        tileLayoutRenderer.createLayoutFromFile(file);
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
-            currentLayer = (currentLayer + 1) % tileLayoutRenderer.getTileLayoutCount();
+            increment();
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
-            tileLayoutRenderer.saveLayouts(file);
+            saveLayouts();
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            tileLayoutRenderer.createLayoutFromFile(file);
+            loadLastSave();
         }
     }
 

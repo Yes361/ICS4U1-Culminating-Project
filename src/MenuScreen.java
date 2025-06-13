@@ -156,6 +156,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
     public JButton createMenuButton(String label, MouseListener buttonMouseListener) {
         JButton button = new JButton(label);
         button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        button.setFocusPainted(false);
 
         button.setBackground(Color.WHITE);
         button.setOpaque(false);

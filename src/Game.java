@@ -21,6 +21,7 @@ public class Game extends JFrame implements ComponentListener {
     public Game() {
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
 
         root = new JGameObject();
         root.setOpaque(true);

@@ -7,6 +7,8 @@ import Core.Input.Input;
 import Utility.Console;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -40,8 +42,6 @@ public class EditorScreen extends JGameObject {
         camera2D.setBounds(0, 0, getWidth(), getHeight());
         camera2D.setCenter(50, 50);
 
-//        camera2D.add(tileLayoutPalette);
-
         InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         inputMap.put(KeyStroke.getKeyStroke("pressed UP"), "pressed UP");
         inputMap.put(KeyStroke.getKeyStroke("pressed DOWN"), "pressed DOWN");
@@ -58,49 +58,42 @@ public class EditorScreen extends JGameObject {
                 up = true;
             }
         });
-
         getActionMap().put("released UP", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 up = false;
             }
         });
-
         getActionMap().put("pressed DOWN", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 down = true;
             }
         });
-
         getActionMap().put("released DOWN", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 down = false;
             }
         });
-
         getActionMap().put("pressed LEFT", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 left = true;
             }
         });
-
         getActionMap().put("released LEFT", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 left = false;
             }
         });
-
         getActionMap().put("pressed RIGHT", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 right = true;
             }
         });
-
         getActionMap().put("released RIGHT", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,6 +102,11 @@ public class EditorScreen extends JGameObject {
         });
 
         addChild(tileLayoutPalette);
+
+        JPanel panel = new JPanel();
+        int yVal = 500;
+        panel.setBounds(0, yVal, getWidth(), getHeight() - yVal);
+        panel.setBorder(new LineBorder(Color.BLACK, 3));
 
         frame = new JFrame();
         frame.setBounds(0, 0, 500, 500);
@@ -136,8 +134,13 @@ public class EditorScreen extends JGameObject {
             }
         });
 
-        add(OpenFileLevel);
-        setComponentZOrder(OpenFileLevel, 0);
+//        JLabel label = new JLabel();
+
+        panel.add(OpenFileLevel);
+        panel.setComponentZOrder(OpenFileLevel, 0);
+
+//        add(panel);
+//        setComponentZOrder(panel, 0);
     }
 
     @Override

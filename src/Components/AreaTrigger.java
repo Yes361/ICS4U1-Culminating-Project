@@ -22,7 +22,7 @@ public class AreaTrigger extends JGameObject implements CollisionListener {
     }
 
     @Override
-    public void onCollision(Object other) {
+    public void onCollision(CollisionListener other) {
 
     }
 
