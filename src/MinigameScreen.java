@@ -46,7 +46,7 @@ public class MinigameScreen extends Screen implements JGameObjectInterface {
             new HangManMinigame(),
             new TicTacToeMinigame(),
             // TODO: More fleshed out implementation wordle
-            new WordleMinigame(),
+            // new WordleMinigame(),
             new SuperTicTacToeMinigame(),
             new Connect4Minigame(),
             new MinesweeperMinigame(),
