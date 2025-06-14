@@ -46,7 +46,7 @@ public class MinigameScreen extends Screen implements JGameObjectInterface {
             new HangManMinigame(),
             new TicTacToeMinigame(),
             // TODO: More fleshed out implementation wordle
-//            new WordleMinigame(),
+            new WordleMinigame(),
             new SuperTicTacToeMinigame(),
             new Connect4Minigame(),
             new MinesweeperMinigame(),
@@ -153,7 +153,7 @@ public class MinigameScreen extends Screen implements JGameObjectInterface {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-//                    root.setVisible(true);
+                    root.setVisible(true);
 
                     // Setting the scroll pane invisible to view the minigame
                     scrollCatalogue.setVisible(false);
