@@ -26,14 +26,20 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
     private int currentDialogIndex = 0;
     private EventEmitter eventEmitter = new EventEmitter();
     private JTextArea label;
+    private JLabel imageIcon;
 
     public TextDialogDisplay() {
-        setBounds(0, 400, 900, 100);
+        setBounds(0, 0, 900, 600);
+        setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(0, 500, getWidth(), 100);
 
         setFocusable(true);
+        setOpaque(false);
         grabFocus();
 
-        setBackground(Color.BLACK);
+        setBackground(Color.WHITE);
         setBorder(new CompoundBorder(new LineBorder(Color.WHITE, 10, false), new EmptyBorder(0, 0, 0, 0)));
 
         addKeyListener(this);
@@ -42,16 +48,16 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
         getActionMap().put("space", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (textTypewriterEngine.isTextPlaying()) {
-                    textTypewriterEngine.skipTextAnimation();
-                } else {
-                    if (++currentDialogIndex >= characterDialogList.size()) {
-                        eventEmitter.emit("onScriptFinish");
-                    } else {
-                        eventEmitter.emit("onNextDialogue", currentDialogIndex);
-                        textTypewriterEngine.playTypewriterEffect((JTextArea) getComponent(0), characterDialogList.get(currentDialogIndex).dialogText(), 2000);
-                    }
-                }
+            if (textTypewriterEngine.isTextPlaying()) {
+                textTypewriterEngine.skipTextAnimation();
+            } else if (++currentDialogIndex >= characterDialogList.size()) {
+                eventEmitter.emit("onScriptFinish");
+            } else {
+                Console.println(AssetManager.getResourceDirectory(characterDialogList.get(currentDialogIndex).chrPath()));
+                imageIcon.setIcon(new ImageIcon(AssetManager.getResourceDirectory(characterDialogList.get(currentDialogIndex).chrPath())));
+                eventEmitter.emit("onNextDialogue", currentDialogIndex);
+                textTypewriterEngine.playTypewriterEffect(label, characterDialogList.get(currentDialogIndex).dialogText(), 2000);
+            }
             }
         });
 
@@ -69,14 +75,21 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
 
         label = new JTextArea("");
         label.setLineWrap(true);
-        label.setBounds(0, 400, 400, getHeight());
-        label.setForeground(Color.WHITE);
-        label.setBackground(Color.BLACK);
-        add(label);
+        label.setForeground(Color.BLACK);
+        label.setOpaque(false);
+        label.setEditable(false);
+        panel.add(label);
+
+        add(panel);
+
+        imageIcon = new JLabel();
+        imageIcon.setBounds(0, 100, getWidth(), 400);
+        add(imageIcon);
     }
 
     public void play() {
         textTypewriterEngine.playTypewriterEffect(label, characterDialogList.getFirst().dialogText(), 500);
+        imageIcon.setIcon(new ImageIcon(AssetManager.getResourceDirectory(characterDialogList.getFirst().chrPath())));
     }
 
     public void complete() {
@@ -93,8 +106,12 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
                 String line = sc.nextLine();
 
                 if (line.contains("[")) {
+                    String name = line.substring(1, line.length() - 1);
+                    String path = sc.nextLine();
+                    String chrPath = path.substring(1, path.length() - 1);
+
                     String text = sc.nextLine();
-                    CharacterDialog currentCharacterDialog = new CharacterDialog(text, line);
+                    CharacterDialog currentCharacterDialog = new CharacterDialog(text, name, chrPath);
 
                     newCharacterDialogs.add(currentCharacterDialog);
                 }
@@ -130,16 +147,7 @@ public class TextDialogDisplay extends JPanel implements JGameObjectInterface, K
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (textTypewriterEngine.isTextPlaying()) {
-            textTypewriterEngine.skipTextAnimation();
-        } else {
-            if (++currentDialogIndex >= characterDialogList.size()) {
-                eventEmitter.emit("onScriptFinish");
-            } else {
-                eventEmitter.emit("onNextDialogue", currentDialogIndex);
-                textTypewriterEngine.playTypewriterEffect((JTextArea) getComponent(0), characterDialogList.get(currentDialogIndex).dialogText(), 2000);
-            }
-        }
+
     }
 
     @Override

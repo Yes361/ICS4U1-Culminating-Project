@@ -18,13 +18,19 @@ import java.util.Random;
 public class MinesweeperMinigame extends Minigame {
     private int width = 15;
     private int height = 15;
-    private JPanel gamePanel;
-    private JButton[][] cells;
+
+    // matrix variables
     private boolean[][] bombs;
     private int[][] neighbors;
     private boolean[][] discovered;
     private boolean[][] flagged;
+
+    // UI variables
+    private JPanel gamePanel;
+    private JButton[][] cells;
     private JLabel messageLabel;
+
+    // state variables
     private boolean lost = false;
     private boolean won = false;
     private boolean flagSelectorMode = false;
@@ -114,6 +120,22 @@ public class MinesweeperMinigame extends Minigame {
         });
 
 
+        // Displays the rules
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                Minesweeper
+                
+                Rules:
+                Click on a square, and itll clear out an area. Squares that are cleared with numbers on them indicate how many bomb squares are surrounding them in a 3x3 area, your goal is to clear out all the squares and avoid all the bombs. Goodluck!
+                
+                """);
+            }
+        });
+        report.add(rulesButton);
         report.add(container);
         report.add(button);
         add(report);

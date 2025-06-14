@@ -1,4 +1,5 @@
 import Components.Camera2D;
+import Components.Screen;
 import Components.TileLayoutPalette;
 import Components.TileMap;
 import Core.GameSystem.AssetManager;
@@ -16,7 +17,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class EditorScreen extends JGameObject {
+public class EditorScreen extends Screen {
     private TileLayoutPalette tileLayoutPalette;
     private TileMap tileMap = new TileMap();
     private Camera2D camera2D;
@@ -31,6 +32,7 @@ public class EditorScreen extends JGameObject {
 
     public EditorScreen() {
         setBounds(0, 0, 900, 600);
+        setLayout(null);
 
         tileMap.recursiveAddFromDirectory(AssetManager.getSpriteResourcePath("TileMap"));
 
@@ -101,7 +103,7 @@ public class EditorScreen extends JGameObject {
             }
         });
 
-        addChild(tileLayoutPalette);
+        add(tileLayoutPalette);
 
         JPanel panel = new JPanel();
         int yVal = 500;
@@ -144,7 +146,12 @@ public class EditorScreen extends JGameObject {
     }
 
     @Override
-    public void update(float delta) {
-        super.update(delta);
+    public void showScreen() {
+
+    }
+
+    @Override
+    public void hideScreen() {
+
     }
 }

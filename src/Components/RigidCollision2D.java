@@ -1,34 +1,51 @@
 package Components;
 
 import Core.GameSystem.JGameObject;
+import Utility.Console;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class RigidCollision2D extends JGameObject implements CollisionListener {
+    public RigidCollision2D(int x, int y, int w, int h) {
+        setBounds(x, y, w, h);
+    }
 
     @Override
     public void onCollision(CollisionListener other) {
-        if (other instanceof JGameObject) {
-            JGameObject gameObject = (JGameObject) other;
+        Rectangle rectA = getBoundRect().getBounds();
+        Rectangle rectB = other.getBoundRect().getBounds();
 
-            Rectangle rectA = getBoundRect().getBounds();
-            Rectangle rectB = other.getBoundRect().getBounds();
+        Rectangle intersection = rectA.intersection(rectB);
+        if (intersection.isEmpty()) {
+            return;
+        }
 
-            Rectangle intersection = rectA.intersection(rectB);
+        if (other instanceof Player gameObject) {
+            if (rectA.intersects(rectB)) {
 
-            if (intersection.width < intersection.height) {
-                if (rectA.x < rectB.x) {
-                    rectA.x -= intersection.width;
+                int newX = 0;
+                int newY = 0;
+
+                int buffer = 1;
+
+                if (intersection.width < intersection.height) {
+                    // Resolve along X axis
+                    if (rectA.x < rectB.x) {
+                        newX += intersection.width + buffer;
+                    } else {
+                        newX -= intersection.width + buffer;
+                    }
                 } else {
-                    rectA.x += intersection.width;
+                    // Resolve along Y axis
+                    if (rectA.y < rectB.y) {
+                        newY += intersection.height + buffer;
+                    } else {
+                        newY -= intersection.height + buffer;
+                    }
                 }
-            } else {
-                if (rectA.y < rectB.y) {
-                    rectA.y -= intersection.height;
-                } else {
-                    rectA.y += intersection.height;
-                }
+
+                gameObject.movePlayer(newX, newY);
             }
         }
     }

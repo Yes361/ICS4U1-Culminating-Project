@@ -14,6 +14,7 @@ public class AnimationSprites {
         return animations.get(identifier);
     }
 
+    // TODO: Implementation of addAnimation helpers from a specified location
     public void addAnimationFromDirectory(String filename) {
 
     }

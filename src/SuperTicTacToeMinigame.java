@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+// SuperTicTacToeMinigame extends Minigame — it's a composite game made up of 9 small TicTacToe boards
 public class SuperTicTacToeMinigame extends Minigame {
     private Integer[][][][] state;
     private JButton[][][][] cells;
@@ -39,13 +40,51 @@ public class SuperTicTacToeMinigame extends Minigame {
         resetMinigame();
     }
 
+    // Sets up main UI components
     public void createMinigame() {
+        JLabel titleLabel = new JLabel("Super TicTacToe");
+        titleLabel.setBackground(Color.WHITE);
+        titleLabel.setOpaque(true);
+        titleLabel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK),  new EmptyBorder(5, 5, 5, 5)));
+        JSwingUtilities.resizeFont(titleLabel, 24);
+
+        add(titleLabel);
+
         createBoard();
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetMinigame();
+            }
+        });
+
+        add(resetButton);
 
         messageLabel = new JLabel();
         add(messageLabel);
+
+        // Displays the rules
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                        Super Tic Tac Toe
+                        
+                        Rules:
+                        
+                        Tic Tac Toe but every box has a Tic Tac Toe inside of it. Playing against the computer, you will start by selecting any square within any of the boxes in the 3x3. Whichever box you select in the inner 3x3, the next player has to play in the matching box in the OUTER grid that you chose in the INNER grid.  If a grid gets full and you choose an INNER box where all the inner boxes of the OUTER boxes are used up, you can then choose any other Outer box thats available. You continue with this until you either get a tie in one of the boxes or someone gets a point, and you continue until either the overall outer boxes are a tie or somoene gets 3 in a row in the outer boxes. Good luck!
+                        """);
+            }
+        });
+
+        add(rulesButton);
     }
 
+    // Initializes the main game board
     public void createBoard() {
         GridLayout gridLayout = new GridLayout(3, 3);
         gamePanel = new JPanel(gridLayout);
@@ -65,13 +104,14 @@ public class SuperTicTacToeMinigame extends Minigame {
 
         for (int i = 0;i < 3;i++) {
             for (int j = 0;j < 3;j++) {
-                gamePanel.add(createCellPanel(i, j));
+                gamePanel.add(createCellPanel(i, j)); // create each small board
             }
         }
 
         add(gamePanel);
     }
 
+    // initializes a small board
     public JPanel createCellPanel(int x, int y) {
         GridLayout gridLayout = new GridLayout(3, 3);
         JPanel cellPanel = new JPanel() {
@@ -81,16 +121,19 @@ public class SuperTicTacToeMinigame extends Minigame {
                 if (finalStates[x][y] != null) {
                     Color color = g.getColor();
 
+                    // If P1 win: circle, P2 win: X, draw in respective color
                     switch (finalStates[x][y]) {
                         case DRAW -> {
-                            g.drawLine(0, 0, this.getWidth(), this.getHeight());
+                            g.drawLine(0, 0, this.getWidth(), this.getHeight()); // slash
                         }
                         case P1_WIN -> {
                             g.setColor(Color.BLUE);
-                            g.drawOval(0, 0, this.getWidth(), this.getHeight());
+                            g.drawOval(0, 0, this.getWidth(), this.getHeight()); // circle
                         }
                         case P2_WIN -> {
                             g.setColor(Color.RED);
+
+                            // cross
                             g.drawLine(0, 0, this.getWidth(), this.getHeight());
                             g.drawLine(this.getWidth(), 0, 0, this.getHeight());
                         }
@@ -116,6 +159,7 @@ public class SuperTicTacToeMinigame extends Minigame {
                 int row = i;
                 int col = j;
 
+                // handle click to make a move
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -123,10 +167,13 @@ public class SuperTicTacToeMinigame extends Minigame {
                             return;
                         }
 
+                        // If the clicked button is not permitted based on the region selector
+                        // ignore the click
                         if (regionSelectorRow != -1 && !(regionSelectorRow == x && regionSelectorCol == y)) {
                             return;
                         }
 
+                        // Mark the square appropriately based on the current turn
                         if (currentTurn == 1) {
                             button.setForeground(Color.BLUE);
                             button.setText("O");
@@ -135,8 +182,10 @@ public class SuperTicTacToeMinigame extends Minigame {
                             button.setText("X");
                         }
 
+                        // set the state accordingly
                         state[x][y][row][col] = currentTurn;
 
+                        // determine if there is a win in that grid
                         if (isWin(state[x][y], currentTurn)) {
                             if (currentTurn == 1) {
                                 finalStates[x][y] = finalState.P1_WIN;
@@ -145,12 +194,13 @@ public class SuperTicTacToeMinigame extends Minigame {
                             }
 
                             repaint();
-                        } else if (isDraw(null, state[x][y])) {
+                        } else if (isDraw(null, state[x][y])) { // determine if there is a draw in that microgrid
                             finalStates[x][y] = finalState.DRAW;
 
                             repaint();
                         }
 
+                        // Determine if there is a win in the large board
                         if (isWin(finalStates, finalState.P1_WIN)) {
                             messageLabel.setText("Player 1 Won!");
                         } else if (isWin(finalStates, finalState.P2_WIN)) {
@@ -163,36 +213,11 @@ public class SuperTicTacToeMinigame extends Minigame {
                             regionSelectorRow = -1;
                             regionSelectorCol = -1;
 
-                            if (currentTurn == 1) {
-                                setPanelBorderColor(gamePanel, Color.RED);
-                            } else {
-                                setPanelBorderColor(gamePanel, Color.BLUE);
-                            }
-
-                            for (Component component : gamePanel.getComponents()) {
-                                if (component instanceof JPanel panel) {
-                                    setPanelBorderColor(panel, Color.BLACK);
-                                }
-                            }
-
                         } else {
                             regionSelectorRow = row;
                             regionSelectorCol = col;
-
-                            setPanelBorderColor(gamePanel, Color.BLACK);
-
-                            for (Component component : gamePanel.getComponents()) {
-                                if (component instanceof JPanel panel) {
-                                    setPanelBorderColor(panel, Color.BLACK);
-                                }
-                            }
-
-                            if (currentTurn == 1) {
-                                setPanelBorderColor(panels[row][col], Color.RED);
-                            } else {
-                                setPanelBorderColor(panels[row][col], Color.BLUE);
-                            }
                         }
+                        setBorder(row, col);
 
                         nextTurn();
                     }
@@ -206,6 +231,42 @@ public class SuperTicTacToeMinigame extends Minigame {
         return cellPanel;
     }
 
+    // Sets the highlighted border representing the permissible
+    // playing area based on the regionSelectors
+    private void setBorder(int row, int col) {
+        if (regionSelectorRow != -1) {
+            setPanelBorderColor(gamePanel, Color.BLACK);
+
+            for (Component component : gamePanel.getComponents()) {
+                if (component instanceof JPanel panel) {
+                    setPanelBorderColor(panel, Color.BLACK);
+                }
+            }
+
+            if (currentTurn == 1) {
+                setPanelBorderColor(panels[row][col], Color.RED);
+            } else {
+                setPanelBorderColor(panels[row][col], Color.BLUE);
+            }
+        } else {
+            if (currentTurn == 1) {
+                setPanelBorderColor(gamePanel, Color.RED);
+            } else {
+                setPanelBorderColor(gamePanel, Color.BLUE);
+            }
+
+            for (Component component : gamePanel.getComponents()) {
+                if (component instanceof JPanel panel) {
+                    setPanelBorderColor(panel, Color.BLACK);
+                }
+            }
+        }
+
+    }
+
+    // Utility function for modifying the color of the line border in the component's
+    // compound border
+
     private void setPanelBorderColor(JComponent component, Color color) {
         CompoundBorder border = (CompoundBorder) component.getBorder();
         component.setBorder(new CompoundBorder(new LineBorder(color, 2), border.getInsideBorder()));
@@ -214,6 +275,9 @@ public class SuperTicTacToeMinigame extends Minigame {
     public void nextTurn() {
         currentTurn = currentTurn == 1 ? 2 : 1;
     }
+
+    // Methods for determining whether a win is found
+    // in the row, col, left diagonal, right diagonal
 
     private <T> boolean isDraw(T defaultValue, T[][] matrix) {
         for (int i = 0;i < matrix.length;i++) {
@@ -283,6 +347,7 @@ public class SuperTicTacToeMinigame extends Minigame {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Rendering the background
         Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGSuperTicTacToe.jpeg"), getWidth(), getHeight());
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
     }
@@ -313,5 +378,10 @@ public class SuperTicTacToeMinigame extends Minigame {
 
         regionSelectorRow = -1;
         regionSelectorCol = -1;
+
+        finalStates = new finalState[3][3];
+        state = new Integer[3][3][3][3];
+
+        repaint();
     }
 }

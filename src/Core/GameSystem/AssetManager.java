@@ -83,7 +83,7 @@ public class AssetManager {
     }
 
     public static String getRelativeDirectory(String filePath) {
-        return System.getProperty("user.dir") + filePath;
+        return System.getProperty("user.dir") + "\\" + filePath;
     }
 
     public static void setSpriteResourceDirectory(String spriteResourceDirectory) {

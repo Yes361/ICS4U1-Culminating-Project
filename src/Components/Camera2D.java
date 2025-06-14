@@ -1,3 +1,10 @@
+/*
+* Camera2D creates a controllable viewport for its children
+*
+* Future Improvements:
+* A fully established effects system
+*  */
+
 package Components;
 
 import Animation.Tween.AnimationTween;
@@ -13,6 +20,8 @@ import java.awt.geom.Point2D;
 public class Camera2D extends JGameObject {
     private float x = 0;
     private float y = 0;
+
+    // Properties for enabling camera effects
     private AnimationTween fadeTween;
     private String currentEffect;
     private EventEmitter eventEmitter = new EventEmitter();
@@ -80,6 +89,7 @@ public class Camera2D extends JGameObject {
 
         super.paintComponent(g);
 
+        // Translates all of its children's graphics by the position of the Camera2D
         g.translate((int) x, (int) y);
     }
 }

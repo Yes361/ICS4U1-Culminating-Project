@@ -1,3 +1,7 @@
+/*
+* TextTypewriterEngine creates a typewriter effect
+*  */
+
 package Components;
 
 import Animation.Tween.AnimationTween;
@@ -14,6 +18,7 @@ public class TextTypewriterEngine implements JGameObjectInterface, TweenListener
     private AnimationTween tween;
     private JTextArea label;
 
+    // Reference to the label, the text to be typewritten, and the duration for which it should last
     public void playTypewriterEffect(JTextArea label, String text, float duration) {
         currentText = text;
 
@@ -26,6 +31,9 @@ public class TextTypewriterEngine implements JGameObjectInterface, TweenListener
         this.label = label;
     }
 
+    // Update loop
+    // Updates the contents of the label according to the tween
+    // which interpolates between the 0 and the length of the text
     public void update(float delta) {
         if (tween != null && tween.isPlaying()) {
             label.setText(currentText.substring(0, Math.round(tween.getLerpValue())));

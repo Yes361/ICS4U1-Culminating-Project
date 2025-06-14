@@ -1,3 +1,7 @@
+/*
+* AnimationSprite
+*  */
+
 package Animation;
 
 import javax.imageio.ImageIO;
@@ -10,6 +14,7 @@ import java.util.List;
 public class AnimationSprite {
     private final List<FrameSprite> Sprites = new ArrayList<>();
 
+    // Defining the sprites and its animation interval
     public AnimationSprite(float AnimationInterval, String... files) {
         for (String file : files) {
             addSprite(file, AnimationInterval);
@@ -22,6 +27,7 @@ public class AnimationSprite {
         }
     }
 
+    // Adding a sprite and its specified duration
     public void addSprite(String filePath, float duration) {
         try {
             Sprites.add(new FrameSprite(ImageIO.read(new File(filePath)), duration));

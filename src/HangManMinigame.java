@@ -14,25 +14,32 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 public class HangManMinigame extends Minigame implements KeyListener, JGameObjectInterface {
+    // State variables
     private String currentWord;
     private boolean[] discovered;
-    private JLabel currentLabel;
     private int attemptIndex = 0;
-    private JLabel image;
+
+    // JLabels
+    private JLabel currentLabel;
+    private JLabel hangmanImage;
     private JLabel wrong_guesses;
     private JLabel messageLabel;
+
     private AnimationRenderer fireRenderer;
 
     public HangManMinigame() {
+        // Setting screen properties
         setBounds(0, 0, 900, 600);
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        // Setting panel properties
         JPanel panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel,BoxLayout.PAGE_AXIS);
         panel.setLayout(boxLayout);
@@ -41,30 +48,57 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
 
         add(panel);
 
-        image = new JLabel(getIcon(1));
-        panel.add(image);
+        // Creating the hangman image
+        hangmanImage = new JLabel(getIcon(1));
+        panel.add(hangmanImage);
 
-        JPanel panelSKIB = new JPanel();
-        BoxLayout boxLayout1 = new BoxLayout(panelSKIB, BoxLayout. PAGE_AXIS);
-        panelSKIB.setLayout(boxLayout1);
+        JPanel menuPanel = new JPanel();
+        BoxLayout boxLayout1 = new BoxLayout(menuPanel, BoxLayout. PAGE_AXIS);
+        menuPanel.setLayout(boxLayout1);
 
+        // creating the display for wrong guesses
         wrong_guesses = new JLabel();
+
+        // Setting dimensions
         Dimension dimension = new Dimension(200, 50);
         wrong_guesses.setMinimumSize(dimension);
         wrong_guesses.setPreferredSize(dimension);
         wrong_guesses.setMaximumSize(dimension);
-        wrong_guesses.setBorder(new CompoundBorder(new TitledBorder("Wrong Guesses"), new EmptyBorder(10, 10, 10, 10)));
-        panelSKIB.add(wrong_guesses);
+        wrong_guesses.setBorder(new CompoundBorder(
+            new TitledBorder("Wrong Guesses"),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
 
+        menuPanel.add(wrong_guesses);
+
+        // Message Label to indicate various messages
         messageLabel = new JLabel();
-        panelSKIB.add(messageLabel);
+        menuPanel.add(messageLabel);
 
+        // Represents the current state of the word that is being
+        // guessed
         currentLabel = new JLabel();
         currentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         currentLabel.setBounds(450, 300, 100, 30);
-        panelSKIB.add(currentLabel);
+        menuPanel.add(currentLabel);
 
-        add(panelSKIB);
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                        Hang Molecule
+                        
+                        Rules:
+                        
+                        You have an unknown word of varying length. Your goal is to guess the word by guessing letters that could be in the word. If you choose a letter incorrectly, one Carbon atom will be added to the hanger, and on your fifth carbon, the molecule with combust! If you get all the letters in the word before creating the 5 carbon molecule, you win the game!""");
+            }
+        });
+
+        menuPanel.add(rulesButton);
+
+        add(menuPanel);
 
         AnimationSprite fireSprites = new AnimationSprite(
             80,
@@ -88,7 +122,7 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
                 int currentFrame = (int) args[1];
 
                 Image fireImage = fireRenderer.getCurrentSprite().image();
-                fireComponent.setIcon(new ImageIcon(JSwingUtilities.resizeImageAspectLocked(fireComponent, fireImage, image.getWidth())));
+                fireComponent.setIcon(new ImageIcon(JSwingUtilities.resizeImageAspectLocked(fireComponent, fireImage, hangmanImage.getWidth())));
             }
         });
         fireRenderer.setCurrentAnimation("fire");
@@ -132,13 +166,15 @@ public class HangManMinigame extends Minigame implements KeyListener, JGameObjec
         } else {
             attemptIndex++;
 
-            if (attemptIndex > 5) {
-                messageLabel.setText("You Lost!");
+            Console.println(attemptIndex);
+
+            hangmanImage.setIcon(getIcon(attemptIndex + 1));
+            wrong_guesses.setText(skib + ", " + wrong_guesses.getText());
+
+            if (attemptIndex >= 5) {
+                messageLabel.setText(String.format("You Lost! The word was %s", currentWord));
                 return;
             }
-
-            image.setIcon(getIcon(attemptIndex + 1));
-            wrong_guesses.setText(skib + ", " + wrong_guesses.getText());
         }
 
         currentLabel.setText(currentText.toString());

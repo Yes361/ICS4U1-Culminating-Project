@@ -1,3 +1,8 @@
+/*
+* CollisionEngine handles the collision between objects registered to it
+*
+*  */
+
 package Components;
 
 import Core.GameSystem.JGameObject;
@@ -11,9 +16,14 @@ public class CollisionEngine extends JGameObject  {
     }
 
     private void computeCollisions(float delta) {
+        // Get the children that are implementations of CollisionListeners,
+        // indicating they will respond to collision events in some capacity
         ArrayList<CollisionListener> collidable = (ArrayList<CollisionListener>) getChildren(CollisionListener.class);
         int nCollidables = collidable.size();
 
+        // For each pair of entities that have collidied,
+        // if they intersect, call their onCollision method,
+        // passing in the entity that collided with them
         for (int i = 0;i < nCollidables;i++) {
             CollisionListener a = collidable.get(i);
             for (int j = i + 1;j < nCollidables;j++) {

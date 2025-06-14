@@ -2,7 +2,6 @@ package Components;
 
 import Animation.*;
 import Core.GameSystem.AssetManager;
-import Core.GameSystem.AudioManager;
 import Core.GameSystem.JGameObject;
 import Utility.EventEmitter;
 import Utility.EventListener;
@@ -19,8 +18,8 @@ public class Player extends JGameObject implements CollisionListener {
     private EventEmitter eventEmitter = new EventEmitter();
     private AnimationRenderer animationRenderer;
 
-    private float x;
-    private float y;
+    private float worldX;
+    private float worldY;
     private final float speed = 0.3f;
 
     private final Set<Integer> keysPressed = new HashSet<>();
@@ -29,8 +28,8 @@ public class Player extends JGameObject implements CollisionListener {
         setFocusable(true);
         setSize(100, 100);
         setLocation(0, 0);
-        x = getX();
-        y = getY();
+        worldX = getX();
+        worldY = getY();
 
         setupAnimations();
         setupKeyBindings();
@@ -70,35 +69,35 @@ public class Player extends JGameObject implements CollisionListener {
     }
 
     private void setupAnimations() {
-        AnimationSprite UpAnimation = new AnimationSprite(80,
+        AnimationSprite UpAnimation = new AnimationSprite(100,
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-4.png.png")
         );
 
-        AnimationSprite LeftAnimation = new AnimationSprite(80,
+        AnimationSprite LeftAnimation = new AnimationSprite(100,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide-4.png.png")
         );
 
-        AnimationSprite RightAnimation = new AnimationSprite(80,
+        AnimationSprite RightAnimation = new AnimationSprite(100,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperSide2-4.png.png")
         );
 
-        AnimationSprite DownAnimation = new AnimationSprite(80,
+        AnimationSprite DownAnimation = new AnimationSprite(100,
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-1.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-2.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-3.png.png"),
                 AssetManager.getSpriteResourcePath("Jasper\\JasperBack-4.png.png")
         );
 
-        AnimationSprite IdleAnimation = new AnimationSprite(80,
+        AnimationSprite IdleAnimation = new AnimationSprite(100,
                 AssetManager.getSpriteResourcePath("Jasper\\Jasper-1.png.png")
         );
 
@@ -120,32 +119,41 @@ public class Player extends JGameObject implements CollisionListener {
     public void update(float delta) {
         boolean moved = false;
 
+        float deltaY = 0, deltaX = 0;
+
         if (keysPressed.contains(KeyEvent.VK_UP)) {
-            y -= speed * delta;
+            deltaY -= speed * delta;
             animationRenderer.setCurrentAnimation("down");
             moved = true;
         } else if (keysPressed.contains(KeyEvent.VK_DOWN)) {
-            y += speed * delta;
+            deltaY += speed * delta;
             animationRenderer.setCurrentAnimation("up");
             moved = true;
         } else if (keysPressed.contains(KeyEvent.VK_LEFT)) {
-            x -= speed * delta;
+            deltaX -= speed * delta;
             animationRenderer.setCurrentAnimation("left");
             moved = true;
         } else if (keysPressed.contains(KeyEvent.VK_RIGHT)) {
-            x += speed * delta;
+            deltaX += speed * delta;
             animationRenderer.setCurrentAnimation("right");
             moved = true;
         }
 
         if (moved) {
-            eventEmitter.emit("onMove", x, y);
+            eventEmitter.emit("onMove", worldX, worldY);
         } else {
             animationRenderer.skipToFirstFrame();
         }
 
-        setLocation((int) x, (int) y);
+        movePlayer(deltaX, deltaY);
         animationRenderer.update(delta);
+    }
+
+    public void movePlayer(float deltaX, float deltaY) {
+        worldX += deltaX;
+        worldY += deltaY;
+
+        setLocation((int) worldX, (int) worldY);
     }
 
     @Override
@@ -156,7 +164,7 @@ public class Player extends JGameObject implements CollisionListener {
     }
 
     @Override
-    public void onCollision(Object other) {}
+    public void onCollision(CollisionListener other) {}
 
     @Override
     public Rectangle2D getBoundRect() {

@@ -12,9 +12,12 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 public class TicTacToeMinigame extends Minigame {
+    // UI Variables
     private JPanel gamePanel;
     private JButton[][] cells;
     private JLabel messageLabel;
+
+    // State variables
     private int[][] state;
     private boolean currentTurn;
     private int length = 3;
@@ -27,20 +30,14 @@ public class TicTacToeMinigame extends Minigame {
         resetMinigame();
     }
 
+    // Initializes the minigame
     public void createMinigame() {
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
 
-        JButton minigameScreenButton = new JButton("Go Back!");
-        minigameScreenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Main.game.minigameScreen.SwitchToScreen();
-            }
-        });
-
         setMaximumSize(new Dimension(2 * getWidth() / 3, getHeight()));
 
+        // Creating the title
         JLabel titleLabel = new JLabel("TicTacToe Minigame!");
         titleLabel.setAlignmentX(CENTER_ALIGNMENT);
         JSwingUtilities.resizeFont(titleLabel, 24);
@@ -51,9 +48,12 @@ public class TicTacToeMinigame extends Minigame {
         createBoard();
         add(Box.createVerticalStrut(10));
 
+        // creating a message label indicating the state of the game
         messageLabel = new JLabel();
+        messageLabel.setAlignmentX(CENTER_ALIGNMENT);
         add(messageLabel);
 
+        // reseting the game
         JButton resetButton = new JButton("Reset!");
         resetButton.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -64,17 +64,38 @@ public class TicTacToeMinigame extends Minigame {
             }
         });
 
+
+        add(Box.createVerticalStrut(10));
+        add(resetButton);
         add(Box.createVerticalStrut(10));
 
-        add(resetButton);
+        // Displays the rules
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                Tic Tac Toe
+                
+                Rules:
+                
+                Classic rules of tic tac toe, you and the computer will take turns placing cations and anions on the squares of the board until either there is a draw, or either you or the computer get three in a row diagonally, horizontally, or vertically. If you achieve this, you win!\
+                """);
+            }
+        });
+
+        add(rulesButton);
     }
 
+    // Initializes the board
     public void createBoard() {
         state = new int[length][length];
         cells = new JButton[length][length];
 
         gamePanel = new JPanel();
 
+        // set the size
         Dimension preferredSize = new Dimension(300, 300);
         gamePanel.setPreferredSize(preferredSize);
         gamePanel.setMaximumSize(preferredSize);
@@ -86,6 +107,7 @@ public class TicTacToeMinigame extends Minigame {
 
         gamePanel.setAlignmentX(CENTER_ALIGNMENT);
 
+        // create the buttons
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 JButton button = createButton(borderThickness, i, j);
@@ -98,12 +120,14 @@ public class TicTacToeMinigame extends Minigame {
     }
 
     private JButton createButton(int borderThickness, int i, int j) {
+        // Setting button properties
         JButton button = new JButton();
         button.setSize(100, 100);
         button.setBackground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(new CompoundBorder(new LineBorder(Color.BLACK), new EmptyBorder(borderThickness, borderThickness, borderThickness, borderThickness)));
 
+        // adding an ActionListener to perform logic whne the button is lcicked
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,6 +135,7 @@ public class TicTacToeMinigame extends Minigame {
                     return;
                 }
 
+                // Setting the symbol of the cell accordingly
                 Image image;
                 if (currentTurn) {
                     state[i][j] = 2;
@@ -149,6 +174,9 @@ public class TicTacToeMinigame extends Minigame {
     private void setSelectedCell(int x, int y) {
         cells[x][y].setBorder(new CompoundBorder(new LineBorder(Color.GREEN, 3), new EmptyBorder(borderThickness, borderThickness, borderThickness, borderThickness)));
     }
+
+    // Methods for determining whether a win is found
+    // in the row, col, left diagonal, right diagonal
 
     private boolean rowWin(int x) {
         for (int i = 0; i < length; i++) {

@@ -1,3 +1,5 @@
+/*  */
+
 package Animation;
 
 import Utility.Console;
@@ -7,16 +9,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AnimationRenderer {
+    // References
     private final AnimationSprites animationSprites;
-    private String currentAnimationName = "";
     private AnimationSprite currentAnimation;
     private final JComponent componentReference;
+
+    // State variables
+    private String currentAnimationName = "";
     private float timeElapsed;
     private float prevFrameElapsed;
     private int currentFrame;
-    private final EventEmitter eventEmitter = new EventEmitter();
     private boolean paused = false;
 
+    // Handles animation-related event handling
+    private final EventEmitter eventEmitter = new EventEmitter();
 
     public AnimationRenderer(JComponent componentReference, AnimationSprites animationSprites) {
         ResetAnimation();
@@ -25,6 +31,7 @@ public class AnimationRenderer {
         this.animationSprites = animationSprites;
     }
 
+    // Resetting the animation
     public void ResetAnimation() {
         timeElapsed = 0;
         prevFrameElapsed = 0;
@@ -36,15 +43,22 @@ public class AnimationRenderer {
             return;
         }
 
+        // If the renderer is paused, do not increment timeElapsed
         if (!paused) {
             timeElapsed += delta;
         }
 
+        // If the difference in time between now and
+        // when the last frame exceeds the duration for the current sprite
+        // increment to the next frame
         if (timeElapsed - prevFrameElapsed > getCurrentSprite().duration()) {
             prevFrameElapsed = timeElapsed;
-            currentFrame = (currentFrame + 1) % currentAnimation.getSpriteCount();
 
+            // modular operation to ensure the animation loops
+            currentFrame = (currentFrame + 1) % currentAnimation.getSpriteCount();
             componentReference.repaint();
+
+            // Emit the change for fellow classes subscribed to this event to learn about!
             eventEmitter.emit("onAnimationChange", currentAnimationName, currentFrame);
         }
     }
@@ -73,10 +87,12 @@ public class AnimationRenderer {
         this.paused = paused;
     }
 
+    // Objects can subscribe to animation events through this method
     public void onAnimationEvent(AnimationEvent event) {
         eventEmitter.subscribe("onAnimationChange", event);
     }
 
+    // Sets the current animation as indicated by the animation name
     public void setCurrentAnimation(String AnimationName) {
         paused = false;
 

@@ -1,4 +1,13 @@
+/*
+* StableSpell is a minigame that visualizes 2 sorting algorithms
+*
+* Future Improvements:
+* Implementation of the selection sort algorithm
+* and the recursive sorting algorithms
+*  */
+
 import Components.Minigame;
+import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
 import Utility.Console;
 
@@ -7,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 public class StableSpellMinigame extends Minigame implements JGameObjectInterface {
     private JLabel[] labels;
@@ -15,6 +23,7 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
 
     private JPanel panel;
 
+    // Iteration variables
     private int i = 0;
     private int j = 0;
 
@@ -27,22 +36,24 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
     public StableSpellMinigame() {
         setBounds(0, 0, 900, 600);
 
+        // Combobox for selecting a sorting algorithm
         comboBox = new JComboBox<>();
         comboBox.addItem("Insertion Sort");
         comboBox.addItem("Bubble Sort");
-
         add(comboBox);
 
+        // Panel for displaying the objects
         panel = new JPanel();
         panel.setBounds(0, 0, getWidth(), getHeight());
-
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 
+        // Randomizing values
         values = new int[10];
         for (int k = 0; k < values.length; k++) {
             values[k] = (int) (Math.random() * 100);
         }
 
+        // Creating labels
         labels = new JLabel[values.length];
         for (int k = 0; k < values.length; k++) {
             JLabel label = new JLabel(values[k] + "");
@@ -62,6 +73,7 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
             panel.add(label);
         }
 
+        // Reseting the button
         JButton resetButton = new JButton("Reset !");
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -73,6 +85,7 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
         add(panel);
         add(resetButton);
 
+        // Reseting timer
         JButton startButton = new JButton("Start Again!");
         startButton.setFocusPainted(false);
         startButton.addActionListener(new ActionListener() {
@@ -82,21 +95,39 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
                     timer.stop();
                 }
 
-                skib();
+                createTimer();
             }
         });
 
         add(startButton);
+
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                Stable Spell
+                
+                Rules:
+                
+                You have a randomised set of spell incantations, and you have the option to sort the incantations in various ways, such as bubble sort, selection sort, insertion sort, and more! Pick your potion!\s
+                
+                """);
+            }
+        });
+
+        add(rulesButton);
     }
 
     @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\Stable Spells.jpeg");
     }
 
     @Override
     public String getMinigameName() {
-        return "Bubble Sort Visualizer";
+        return "Stable Spell";
     }
 
     @Override
@@ -106,6 +137,7 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
         isSorting = true;
         comboBox.setEditable(false);
 
+        // Set the starting numbers based on the current sorting algorithm
         switch ((String) comboBox.getSelectedItem()) {
             case "Bubble Sort":
                 i = 0;
@@ -119,11 +151,12 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
                 break;
         }
 
-        skib();
+        createTimer();
     }
 
-    public void skib() {
-
+    public void createTimer() {
+        // Create timer that performs different actions based on which
+        // sorting algorithm is selected
         timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -188,6 +221,8 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
     public void update(float delta) {
         
     }
+
+    // Implementation of the bubble sort algorithms using iterator variables
     private void bubbleSortStep() {
         int n = values.length;
         
@@ -274,16 +309,7 @@ public class StableSpellMinigame extends Minigame implements JGameObjectInterfac
         }
     }
 
-    private void swapLabels(int a, int b) {
-        int temp = values[a];
-        values[a] = values[b];
-        values[b] = temp;
-
-        JLabel tempLabel = labels[a];
-        labels[a] = labels[b];
-        labels[b] = tempLabel;
-    }
-
+    // Highlights labels that are key points of interest
     private void highlightLabels(int a, int b, Color color) {
         for (JLabel label : labels) {
             label.setBackground(Color.LIGHT_GRAY);

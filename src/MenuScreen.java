@@ -1,6 +1,7 @@
 import Animation.Tween.AnimationTween;
 import Animation.Tween.AnimationTweenBuilder;
 import Animation.Tween.TweenListener;
+import Components.Screen;
 import Core.GameSystem.AssetManager;
 import Core.GameSystem.JGameObjectInterface;
 import Utility.graphicUtilities;
@@ -12,10 +13,11 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuScreen extends JPanel implements JGameObjectInterface {
+public class MenuScreen extends Screen implements JGameObjectInterface {
     private JPanel container;
     private AnimationTween imgXProgress;
     private AnimationTween backgroundFade;
@@ -29,9 +31,7 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
     Font font;
 
     public MenuScreen() {
-//        backgroundImagePaths = new File(AssetManager.getSpriteResourcePath("Icons\\SucroseTitleCard")).list();
-        backgroundImagePaths = new String[]{ AssetManager.getSpriteResourcePath("Icons\\academia-background.png") };
-
+        backgroundImagePaths = new File(AssetManager.getSpriteResourcePath("Icons\\SucroseTitleCard")).list();
 
         createMenuScreen();
     }
@@ -75,11 +75,11 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
         createNewGameButton();
         createEditorButton();
         createMinigamesButton();
-
-        container.add(createMenuButton("Save Files", null));
-        container.add(Box.createVerticalStrut(20));
-        container.add(createMenuButton("Settings", null));
-        container.add(Box.createVerticalStrut(20));
+//
+//        container.add(createMenuButton("Save Files", null));
+//        container.add(Box.createVerticalStrut(20));
+//        container.add(createMenuButton("Settings", null));
+//        container.add(Box.createVerticalStrut(20));
 
         // Center container vertically in MenuScreen
         add(Box.createVerticalGlue());
@@ -215,10 +215,10 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
             graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, backgroundFade.getLerpValue()));
         }
 
-//        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\SucroseTitleCard\\%s", backgroundImagePaths[currentBackgroundImage]), getWidth(), getHeight()),
-//                (int) imgXProgress.getLerpValue(), 0, this);
-        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\%s", "academia-background.png"), getWidth(), getHeight()),
+        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\SucroseTitleCard\\%s", backgroundImagePaths[currentBackgroundImage]), getWidth(), getHeight()),
                 (int) imgXProgress.getLerpValue(), 0, this);
+//        g.drawImage(AssetManager.getBufferedSprite(String.format("Icons\\%s", "academia-background.png"), getWidth(), getHeight()),
+//                (int) imgXProgress.getLerpValue(), 0, this);
 
         for (int i = 0;i < buttonAnimations.size();i++) {
             if (buttonAnimations.get(i) != null) {
@@ -244,5 +244,15 @@ public class MenuScreen extends JPanel implements JGameObjectInterface {
         }
 
         repaint();
+    }
+
+    @Override
+    public void showScreen() {
+
+    }
+
+    @Override
+    public void hideScreen() {
+
     }
 }

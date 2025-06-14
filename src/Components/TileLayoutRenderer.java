@@ -72,10 +72,6 @@ public class TileLayoutRenderer extends JGameObject implements Serializable {
     }
 
     public List<TileLayout> createLayoutFromFile(File file) {
-        if (!file.exists()) {
-
-        }
-
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
                 setTileLayouts((List<TileLayout>) objectInputStream.readObject());

@@ -21,10 +21,6 @@ public class TileMap {
         this.tileMap.put(identifier, (BufferedImage) tile);
     }
 
-    public void addTiles() {
-
-    }
-
     public void addTilesFromDirectory(String filePath) {
         File directory = new File(filePath);
         FilenameFilter fileNameExtensionFilter = new FilenameFilter() {

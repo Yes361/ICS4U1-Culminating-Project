@@ -1,3 +1,11 @@
+/*
+* Clock
+*
+* Description:
+* Handles time related jobs
+*
+*  */
+
 package Utility;
 
 import java.util.ArrayList;
@@ -6,7 +14,13 @@ import java.util.HashMap;
 public class Clock {
     private HashMap<String, ArrayList<Long>> times = new HashMap<>();
 
+    /**
+     * startWatch starts a timer that is identified by the specified identifier
+     *
+     * @param identifier the identifier
+     */
     public void startWatch(String identifier) {
+        // Adding the time this was called to times
         ArrayList<Long> timesForIdentifier = new ArrayList<>();
         timesForIdentifier.add(System.nanoTime());
 
@@ -14,14 +28,20 @@ public class Clock {
     }
 
     public void stopWatch(String identifier) {
+        // Removes the identifier from the times
         double timeElapsed = getTimeElapsed(identifier);
         times.remove(identifier);
     }
 
+    // TODO: Adding pause functionality
 //    public void pause(String identifier) {
 //        times.get(identifier).add(System.nanoTime());
 //    }
 
+    /**
+     * getTimeElapsed gets the time elapsed for the time track identified by the specified
+     * identifier
+     */
     public double getTimeElapsed(String identifier) {
         long timeElapsed = System.nanoTime() - times.get(identifier).getFirst();
 //        long timeElapsed = 0;

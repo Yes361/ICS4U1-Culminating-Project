@@ -58,6 +58,24 @@ public class Connect4Minigame extends Minigame {
 
         container.add(resetButton);
 
+        // Displays the rules
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                        Connect 4
+                        
+                        Rules:
+                        
+                        You play against the computer in a game of Connect 4, where you place your pieces into any of the columns and they fall to the bottom, and they stack up as the game goes, whoever is able to get 4 of their pieces in a row, whether it be horizontal, vertical, or diagonal, you win!
+                        """);
+            }
+        });
+
+        container.add(rulesButton);
+
         add(container);
     }
 

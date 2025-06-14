@@ -151,13 +151,13 @@ public class WordleMinigame extends Minigame {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGMinesweeper.png"), getWidth(), getHeight());
+        Image img = JSwingUtilities.resizeImageAspectLockedWithMinDimensions(AssetManager.getBufferedSprite("Minigame\\Backgrounds\\BGWordle.jpeg"), getWidth(), getHeight());
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
     }
 
     @Override
     public BufferedImage getMinigameIcon() {
-        return null;
+        return AssetManager.getBufferedSprite("Minigame\\Thumbnails\\Wordle.jpeg");
     }
 
     @Override
