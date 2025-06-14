@@ -138,11 +138,33 @@ public class EditorScreen extends Screen {
 
 //        JLabel label = new JLabel();
 
+
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setAlignmentX(CENTER_ALIGNMENT);
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MinigameRuleFrame.showPopup("""
+                Editor Screen
+                
+                Open the file level to save different layouts to files
+                W to cycle through 3 layers
+                P to save
+                S to go to last save file
+                Scroll wheel to cycle through different tile characters
+                
+                Left click to place tile
+                right click to delete
+                """);
+            }
+        });
+
         panel.add(OpenFileLevel);
+        panel.add(rulesButton);
         panel.setComponentZOrder(OpenFileLevel, 0);
 
-//        add(panel);
-//        setComponentZOrder(panel, 0);
+        add(panel);
+        setComponentZOrder(panel, 0);
     }
 
     @Override
